@@ -1,10 +1,10 @@
 # simple-test-bigmemory
-Simple test for bigmemory package, compared to data.table, RPostgreSQL, also som trials for future usage
+Simple tests for bigmemory package, compared to data.table, RPostgreSQL, also som trials for future usage
 
-Just some simple tests for bigmemory trials, orignally shared at 20160722:  
+Orignally shared at 20160722:  
 https://www.ptt.cc/bbs/R_Language/M.1469160184.A.266.html
 
-The description was written mainly in Chinese. You can just try the code in simple_test_bigmemory01.R
+The description was written mainly in Chinese. You can just try the code in [simple_test_bigmemory01.R] (https://github.com/cywhale/simple-test-bigmemory/blob/master/simple_test_bigmemory01.R)
 
 1. 套件名稱：
 
