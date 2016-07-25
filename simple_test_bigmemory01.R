@@ -60,14 +60,14 @@ for (i in 1:20) {
 
 close(bigmf)
 
-#========================== ? read.big.matrix
+#========================== ? read.big.matrix, first-run will be time-consuming depends on data size
 system.time(db <- read.big.matrix("bigm_sample01.csv", header = TRUE,
                       type = "double",
                       backingfile = "bigm_sample01.bin",
                       descriptorfile = "bigm_sample01.des"))
 #   user  system elapsed
 #  69.21    3.21   72.54
-#========================== ? attach.big.matrix
+#========================== ? attach.big.matrix, successive run will be super fast. Because only load pointer
 system.time(db <- dget("bigm_sample01.des") %>% attach.big.matrix())
 # user  system elapsed
 # 0.01    0.00    0.01
