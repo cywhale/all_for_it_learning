@@ -19,7 +19,7 @@ bigmemory 4.5.19
 在 multiple processes or cluster共用的機制
 
 可以做簡單的資料操作，如取符合條件的子集合資料出來
-配合其他 big 系列的套件如 biganalytics, bigtabultae等做其他處理、modeling
+配合其他 big 系列的套件如 biganalytics, bigtabulate等做其他處理、modeling
 
 3. 套件主要函數列表：
 
