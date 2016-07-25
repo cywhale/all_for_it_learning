@@ -16,7 +16,7 @@ bigmemory 4.5.19
 但資料限定為單一資料型態，不能同時混雜character, numeric
 它這種資料結構 big.matrix 其實只是一個 R object但實際指向 C++資料結構的指標
 可以memory或檔案形式 share (shared.big.matrix, filebacked.big.matrix)，實現
-在 multip processes or cluster共用的機制
+在 multiple processes or cluster共用的機制
 
 可以做簡單的資料操作，如取符合條件的子集合資料出來
 配合其他 big 系列的套件如 biganalytics, bigtabultae等做其他處理、modeling
