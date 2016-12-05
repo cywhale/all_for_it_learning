@@ -1,3 +1,6 @@
+# Use data.table to solve common problems in R
+Try to solve questions asked on webs (usually in Ptt, R forum, Taiwan) majorly by using data.table, magrittr, some with dplyr, purrr...
+
 # simple-test-bigmemory
 Simple tests for bigmemory package, compared to data.table, RPostgreSQL, also som trials for future usage
 
