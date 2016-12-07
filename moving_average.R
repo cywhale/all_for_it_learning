@@ -27,7 +27,11 @@ dt <- fread('ID Day X
 dt[CJ(unique(ID), seq(min(Day), max(Day)))][,{.(
   Day=rollapply(Day,8,max),
   Mx=rollapply(X, 8, function(x) mean(x[-length(x)],na.rm=T)))}, by = .(ID)]
-  
+               
+## Alternative ways provided by celestialgod
+## https://www.ptt.cc/bbs/R_Language/M.1481106994.A.8CD.html
+## DT[ , x_mean := sapply(Day, function(s) mean(X[Day >= s-7 & Day < s])), by = .(ID)]
+               
 #    ID Day        Mx
 # 1:  1   8 0.3500000
 # 2:  1   9 0.3000000
