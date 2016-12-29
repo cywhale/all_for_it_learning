@@ -1,0 +1,20 @@
+select ... from t1                 
+insert into t2                         
+from t1            
+
+insert into t5       
+select *                                            
+from t4              
+join
+(select ... from t3)   
+insert into t9              
+select * from                               
+(select ... from t8_1)                    
+join                                                      
+(select ... from t8_2) 
+delete from t11       
+delete from t13        
+(select ... from t12) 
+create table new1                  
+select ... from new    
+create table new2
