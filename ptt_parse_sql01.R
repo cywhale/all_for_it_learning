@@ -21,7 +21,7 @@ rinter <- c("join")
 
 s1 <- regexpr(paste(sqlcmd,collapse = "|"), txt1, ignore.case = TRUE)
 t1 <- regexpr(paste(sqlio,collapse = "|"), txt1, ignore.case = TRUE)
-
+sq
 ## First step, get a command - destination table
 
 sqlt <- data.table(cmd=trimx(substr(x=txt1, start=s1, stop=s1+attributes(s1)$match.length-1)),
@@ -55,7 +55,7 @@ for (i in 1:nrow(sqlt)) {
   } else if (sqlt$cmd[i] %in% rinter) {
     if (flag==0L) {
       flag <- 1L
-      ccnt <- out[nrow(out)]$idcnt+1
+      ccnt <- out[nrow(out)]$idcnt
       gcnt <- out[nrow(out)]$grp
       clv  <- out[nrow(out)]$lv + pend
       cobj <- out[nrow(out)]$obj
@@ -87,7 +87,7 @@ for (i in 1:nrow(sqlt)) {
     if (!is.na(sqlt$tbl[i]) & sqlt$tbl[i]!="") {
       cobj <- sqlt$tbl[i]
       if (pend==1L) {
-        tmpo[1,`:=`(lv=clv,obj=cobj,dep=NA_character_,grp=gcnt,idcnt=ccnt)]
+        tmpo[1,`:=`(lv=clv,obj=cobj,dep=NA_character_,grp=gcnt,idcnt=ccnt+1)]
         out <- rbind(out,tmpo)
         ccnt <- 0L
         clv  <- 0L
