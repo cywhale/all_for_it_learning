@@ -1,4 +1,7 @@
-## https://www.ptt.cc/bbs/R_Language/M.1483054339.A.CB6.html
+## Original post: https://www.ptt.cc/bbs/R_Language/M.1483054339.A.CB6.html
+## Original question in pptL https://www.ptt.cc/bbs/R_Language/M.1482913108.A.F96.html
+## Try to parse a sequences of SQL commands to a Command-Destination table and then create 
+## source - level relationships in clustered SQL commands
 library(data.table)
 library(magrittr)
 fcon <- file("D:/R/example/ptt_try_sql.txt", "r")
@@ -113,3 +116,21 @@ for (i in 1:nrow(sqlt)) {
 
 out[,lv:=max(lv)-lv, by=.(grp)] %>%
   .[,dep:=ifelse(lv==0,NA_character_,shift(obj,type="lead")),by=.(grp)]
+
+
+#lv  obj  dep grp idcnt
+#1:  0   t1   NA   1     1
+#2:  1   t2   t1   2     1
+#3:  0   t1   NA   2     2
+#4:  2   t5   t4   3     1
+#5:  1   t4   t3   3     2
+#6:  0   t3   NA   3     3
+#7:  2   t9 t8_1   4     1
+#8:  1 t8_1 t8_2   4     2
+#9:  0 t8_2   NA   4     3
+#10:  0  t11   NA   5     1
+#11:  1  t13  t12   6     1
+#12:  0  t12   NA   6     2
+#13:  0 new1   NA   7     1
+#14:  0  new   NA   8     1
+#15:  0 new2   NA   9     1
