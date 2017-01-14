@@ -4,7 +4,7 @@
 
 library(data.table)
 library(magrittr)
-# original data, dt in wide format
+# original data, dt in wide format, only start and end year; 2 seasons in one year. Need to expand to long format.
 dt <- fread('id start_y start_s end_y end_s
 1       100     1     102    2
 2       101     2     103    1
