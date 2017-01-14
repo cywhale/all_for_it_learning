@@ -4,6 +4,7 @@
 
 library(data.table)
 library(magrittr)
+# original data, dt in wide format
 dt <- fread('id start_y start_s end_y end_s
 1       100     1     102    2
 2       101     2     103    1
@@ -11,19 +12,31 @@ dt <- fread('id start_y start_s end_y end_s
   .[,{.(id=id,
         start=as.numeric(paste(start_y,start_s,sep=".")),
         end = as.numeric(paste(end_y,end_s,sep=".")))}] %>% setkey(start,end)
+#   id start   end
+#1:  1 100.1 102.2
+#2:  3 101.2 101.2
+#3:  2 101.2 103.1
 
+# intermediate full-list durations to do interval join
 gt <- CJ(start_y=100:103, s=1:2) %>%
   .[,{.(start=as.numeric(paste(start_y,s,sep=".")))}] %>% unique() %>%
   .[,end:=start]
 
+#   start   end
+#1: 100.1 100.1
+#2: 100.2 100.2
+#3: 101.1 101.1
+#4: 101.2 101.2
+#5: 102.1 102.1
+#6: 102.2 102.2
+#7: 103.1 103.1
+#8: 103.2 103.2
+
 gx <- foverlaps(gt, dt, type="within", which=TRUE) %>%
   .[which(!is.na(yid)),]
 
-cbind(dt[gx$yid,.(id)], gt[gx$xid,.(start)]) %>% .[order(id),] %>%
-  .[,{.(id=id,
-        year=substr(start,1,nchar(start)-2),
-        s=substr(start,nchar(start),nchar(start))
-  )}]
+out <- cbind(dt[gx$yid,.(id)], gt[gx$xid,.(start)]) %>% .[order(id),] %>%
+  .[,c("year","s"):=tstrsplit(start,".",fixed=T)] %>% .[,start:=NULL]
 
 #    id year s
 # 1:  1  100 1
