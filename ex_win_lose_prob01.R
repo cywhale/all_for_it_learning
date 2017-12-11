@@ -25,3 +25,15 @@
     DT[,.(time, wins1, loss1, draw1, wins2, loss2, draw2)]
 
 
+DT[,.(time, P1, Res, P2, wins1, loss1, draw1, wins2, loss2, draw2)]
+#    time P1 Res P2 wins1 loss1 draw1 wins2 loss2 draw2
+# 1:    1  a   d  b     0     0     0     0     0     0
+# 2:    2  a   w  c     0     0     1     0     0     0
+# 3:    3  b   w  c     0     0     1     0     1     0
+# 4:    4  b   w  a     1     0     1     1     0     1
+# 5:    5  b   w  a     2     0     1     1     1     1
+# 6:    6  a   w  c     1     2     1     0     2     0
+# 7:    7  a   d  c     2     2     1     0     3     0
+# 8:    8  b   d  a     3     0     1     2     2     2
+# 9:    9  a   w  b     2     2     3     3     0     2
+#10:   10  c   w  b     0     3     1     3     1     2
