@@ -16,7 +16,7 @@ PDF <- xmlTreeParse("ideone_jqS8fo1.xml", useInternalNodes=TRUE)
 #Get the page/text/location information
 
 pages <- getNodeSet(PDF, "//Page[@number]")
-words <- sapply(seq_along(pages), function(x, pages) {
+words <- sapply(seq_along(pages), function(x) {
   wx<- getNodeSet(PDF, paste0("//Page[@number='",x,"']/Content/Para/Box/Word"))
   length(wx)
 }, simplify = TRUE)
