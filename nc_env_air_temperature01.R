@@ -8,6 +8,7 @@ library(magrittr)
 library(ncdf4)
 #library(lubridate)
 library(units)
+library(ggplot2)
 
 infile <- "D:/Env/air/air.2m.mon.mean.nc"
 testB <- 4L
