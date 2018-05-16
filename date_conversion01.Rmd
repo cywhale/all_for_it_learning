@@ -1,0 +1,47 @@
+---
+title: "Date conversion by R"
+output: html_notebook
+---
+
+Find *fasttime* package from a data.table presentation [The beauty of data manipulation with data.table](http://divenyijanos.github.io/documents/erum_workshop_datatable.html) by Divényi János. I'm interested in this benchmark, and modified some codes as following.
+
+```{r setup, include=FALSE, echo=FALSE, cache=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(data.table)
+library(fasttime)
+library(lubridate)
+library(anytime)
+library(microbenchmark)
+
+#load("D:/R/biosp/tmp/test_datagrd02_sp.RData")
+#tstt <- copy(xsite)[, date:=as.character(date)]
+
+B=1E5
+set.seed(123L)
+tstt <- data.table(yr=sample(1950:2008,B,replace=TRUE),
+                   mo=formatC(sample(1:12,B,replace=TRUE), width=2, format="d", flag="0"),
+                   dd=formatC(sample(1:28,B,replace=TRUE), width=2, format="d", flag="0"))[,date:=paste(yr,mo,dd,sep="-")]
+
+
+tt <- copy(tstt)[, pdate := anydate(date)]
+tt1<- copy(tstt)[, pdate := as.IDate(fasttime::fastPOSIXct(date))]
+all.equal(tt,tt1) #class not exactly the same
+
+bt1 <- microbenchmark::microbenchmark(
+  'direct'=copy(tstt)[, pdate := as.Date(date, '%Y-%m-%d')],
+  'lubridate'=copy(tstt)[, pdate := as.Date(lubridate::fast_strptime(date, '%Y-%m-%d'))],
+  'anytime' =copy(tstt)[, pdate := anydate(date)],  # convenient but slow
+  'fasttime'=copy(tstt)[, pdate := as.Date(fasttime::fastPOSIXct(date))],
+  'dt.IDate'=copy(tstt)[, pdate := as.IDate(fasttime::fastPOSIXct(date))],
+  'dt.IDate2'=copy(tstt)[,pdate := as.IDate(date)] # slow if not do POSIXct conv first
+)
+bt1
+```
+
+```{r, echo=FALSE,results='asis'}
+autoplot.microbenchmark(bt1)
+
+```
