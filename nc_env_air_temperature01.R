@@ -44,8 +44,8 @@ g1 <- ggplot(data=tout, aes(x=lng, y=lat)) +
   geom_tile(aes(fill=airTemp),color=NA) +
   stat_contour(aes(z=airTemp), binwidth=5, bins=10, color="darkgrey") +
   geom_path(data = rnaturalearth::ne_coastline(scale = "medium"), aes(x = long, y = lat, group = group)) +
-  coord_equal() +
-  coord_fixed(ratio = 1)+
+  coord_equal(xlim = c(-179.999999,179.999999)) +
+  #coord_fixed(ratio = 1)+
   scale_fill_gradientn(colours = colorRamps::blue2red(128)) +
   theme(
     panel.background = element_rect(fill="white"),
