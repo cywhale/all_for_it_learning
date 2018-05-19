@@ -34,7 +34,7 @@ image(x=lngx0-180,y=rev(latx0),z=zt[,ncol(zt):1], ## reverse lat to make it incr
 
 tout <- rbindlist(lapply(seq_len(testB), function(i) {
   #zt=matrix(air[,,i],ncol=length(latx0),nrow=length(lngx0),byrow=F)
-  cbind(CJ(lat=latx0, lng=lngx0-180), 
+  cbind(CJ(lat=as.numeric(latx), lng=as.numeric(lngx0)-180), 
         airTemp=as.numeric(air[,,i])-273.15,
         date=datex[i])
 }))
@@ -66,3 +66,17 @@ g1 <- ggplot(data=tout, aes(x=lng, y=lat)) +
   )
   
 g1
+
+### use for-loop, 20180519
+require(sp)
+require(rnaturalearth)
+
+par(mfrow=c(2,2))
+for (i in seq_len(testB)) {
+  zt=matrix(air[,,i],ncol=length(latx0),nrow=length(lngx0),byrow=F)
+  
+  image(x=lngx0-180,y=rev(latx0),z=zt[,ncol(zt):1], ## reverse lat to make it increasing
+        col = colorRamps::blue2red(128)) #rainbow(128)[50:128])
+  
+  plot(rnaturalearth::ne_coastline(scale="medium"), add=TRUE)
+}
