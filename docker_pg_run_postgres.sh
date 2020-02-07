@@ -1,5 +1,7 @@
 #DAY1
 # find resource: https://doc.yonyoucloud.com/doc/chinese_docker/examples/postgresql_service.html
+# Postgres in docker, setting in /var/lib/postgresql/data
+# start postgres: pg_ctl -D /var/lib/postgresql/data -l logfile start
 docker pull postgres
 docker images
 ## REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
