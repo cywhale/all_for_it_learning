@@ -1,5 +1,6 @@
 #DAY1
 # find resource: https://doc.yonyoucloud.com/doc/chinese_docker/examples/postgresql_service.html
+# Store data: https://github.com/docker-library/docs/tree/master/postgres#pgdata
 # Postgres in docker, setting in /var/lib/postgresql/data
 # start postgres: pg_ctl -D /var/lib/postgresql/data -l logfile start
 docker pull postgres
@@ -14,7 +15,8 @@ docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
 f5ed60fc4327        postgres            "docker-entrypoint.s…"   3 seconds ago       Up 2 seconds        5432/tcp            testpg
 
-# docker exec in bash
+# Q1: docker exec in bash CANNOT store data, lost new user and database after docker commit
+# -----------------------------------------------------------------------------------------
 docker exec -it testpg bash
 psql -U postgres
 
@@ -31,6 +33,9 @@ exit
 exit
 
 docker commit f5ed60fc4327d9c7826ece3c8a670e423b855541578483d05e6ff8841ab475e0 postgres:tagxx
+# -----------------------------------------------------------------------------------------
+
+
 
 docker run -d --name testpg postgres:tagxx ## TRY link by other docker container
 
