@@ -33,5 +33,37 @@ docker exec -it 8f451f75473eb4c6cc43ce189d820255499fb0cb07862b54ef3c357c6f70ad87
 
 docker commit 8f451f75473eb4c6cc43ce189d820255499fb0cb07862b54ef3c357c6f70ad87 testxx:tagxx
 
+# DAY2 install SSH inside docker container
+# ref: https://docs.docker.com/engine/examples/running_ssh_service/
+docker run -it --name testxx your_container:tagxx /bin/bash
+# -------------------- in container -----------------------
+## root@$
+apt-get update && apt-get install -y netstat openssh-server
+mkdir -p /var/run/sshd
+
+# echo 'root:YOUR_PASS' | chpasswd
+sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+mkdir root/.ssh
+echo '#!/bin/bash' > /run.sh
+echo '/usr/sbin/sshd -D' >> /run.sh
+chmod u+x run.sh
+exit
+# -------------------- exit container -----------------------
+
+docker commit -c "EXPOSE 22" testxx your_container:tagxx
+docker stop testxx
+docker rm testxx
+
+# NOW you can run for ssh 
+docker run -p YOUR_PORT:22 -d --name testxx your_container:tagxx /run.sh
+
+# Login from remote, BUT it's may not safe due to root login
+ssh root@your_localhost_ip -p YOUR_PORT
+
+
+
+
 
 
