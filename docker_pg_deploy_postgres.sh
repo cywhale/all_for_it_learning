@@ -1,5 +1,4 @@
 #Dockerize postgresql
-# find resource: https://doc.yonyoucloud.com/doc/chinese_docker/examples/postgresql_service.html
 # Store data: https://github.com/docker-library/docs/tree/master/postgres#pgdata
 # Postgres in docker, setting in /var/lib/postgresql/data
 # start postgres: pg_ctl -D /var/lib/postgresql/data -l logfile start
@@ -20,14 +19,17 @@ f5ed60fc4327        postgres            "docker-entrypoint.s…"   3 seconds ago
 docker exec -it testpg bash
 psql -U postgres
 
+## in your host $
+docker cp testpg:/var/lib/postgresql/data ./YOUR_HOST_PGDATA_S 
+
 ## psql (12.1 (Debian 12.1-1.pgdg100+1))
 ## postgres=# (psql command-line)
 
-CREATE USER user_namexx WITH LOGIN PASSWORD 'passwordxx' CREATEDB;
+CREATE USER user_namexx  with LOGIN password 'YOUR_PASSWORD' CREATEDB;
 create database your_dbxx encoding='UTF8' TEMPLATE = template0 LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
-exit
-psql -U postgres -d your_dbxx
-ALTER SCHEMA public OWNER TO user_namexx;
+# exit
+# psql -U postgres -d your_dbxx
+# ALTER SCHEMA public OWNER TO user_namexx;
 GRANT ALL privileges on database your_dbxx to user_namexx;
 exit
 exit
