@@ -21,17 +21,13 @@ docker commit 5d09b7a80c7a testxx:tagxx
 # ....... Note: Still 111 connection refused during docker run, use --net=host 
 # Ans3: docker commit
 
-docker run -d --network host --name testxx -p 8000:80 testxx:tagxx
-## WARNING: Published ports are discarded when using host network mode
-## 8f451f75473eb4c6cc43ce189d820255499fb0cb07862b54ef3c357c6f70ad87
-
-docker exec -it 8f451f75473eb4c6cc43ce189d820255499fb0cb07862b54ef3c357c6f70ad87 bash
+docker run -it --net=host --name testxx -p 8000:80 testxx:tagxx /bin/bash
 ## $ (bash command-line inside docker)
 # apt-get update
 # apt-get install -y #what you want here
 # exit
 
-docker commit 8f451f75473eb4c6cc43ce189d820255499fb0cb07862b54ef3c357c6f70ad87 testxx:tagxx
+docker commit testxx testxx:tagxx
 
 # DAY2 install SSH inside docker container
 # ref: https://docs.docker.com/engine/examples/running_ssh_service/
