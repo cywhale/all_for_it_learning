@@ -21,7 +21,7 @@ docker commit 5d09b7a80c7a testxx:tagxx
 # ....... Note: Still 111 connection refused during docker run, use --net=host 
 # Ans3: docker commit
 
-docker run -it --net=host --name testxx -p 8000:80 testxx:tagxx /bin/bash
+docker run -it --net=host --name testxx testxx:tagxx /bin/bash
 ## $ (bash command-line inside docker)
 # apt-get update
 # apt-get install -y #what you want here
