@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <title>Ocean Biogeographical Provinces</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.css">
+  </head> 
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+    html, body, #map {
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="map"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.js"></script>
+    <script src="./leaflet.wms.js"></script>
+    <script>
+    var map = new L.Map('map', { center: new L.LatLng(25,118), zoom: 5, attributionControl:true});    
+
+    var wmslay1= L.tileLayer.wms("https://gis.unep-wcmc.org/arcgis/services/marine/WCMC_036_MEOW_PPOW_2007_2012/MapServer/WMSServer?", {
+        layers: 0,
+        format: 'image/png',
+        transparent: true,
+        attribution: 'Spalding MD, Fox HE, Allen GR, Davidson N, Ferdaña ZA, Finlayson M, Halpern BS, Jorge MA, Lombana A, Lourie SA, Martin KD, McManus E, Molnar J, Recchia CA, Robertson J (2007). Marine Ecoregions of the World: a bioregionalization of coast and shelf areas. BioScience 57: 573-583. URL: http://bioscience.oxfordjournals.org/content/57/7/573.abstract; http://data.unep-wcmc.org/'
+    });
+    map.addLayer(wmslay1);
+
+    // Add Feature Info Collection from WMS source/layers https://github.com/heigeo/leaflet.wms
+    var s = L.WMS.source(
+        "https://gis.unep-wcmc.org/arcgis/services/marine/WCMC_036_MEOW_PPOW_2007_2012/MapServer/WMSServer?",
+        {
+            "format": "image/png",
+            "transparent": "true",
+            "info_format": "text/html",
+            "tiled": true
+        }        
+    );    
+    s.getLayer(0).addTo(map);
+
+    </script>
+</html>
