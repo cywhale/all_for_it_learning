@@ -41,5 +41,12 @@ leaflet() %>%
   ) %>% 
   addLayersControl(baseGroups = c("WMS")) #, "Legend")) #Feature Info Collection within each polygon still not supported in R/leaflet?
 ########################################### BUT js leaflet.wms can (see my js/html version aboving), maybe can be integrated in shiny?
+#
+# Feature Info collection implemented in mapview
+library(mapview)
+mapviewOptions(basemaps = c("Esri.WorldShadedRelief"))
+mapview(br, zcol = c("PROVINC"))
+
+
 
 
