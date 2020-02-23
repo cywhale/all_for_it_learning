@@ -3,6 +3,7 @@
 # Spalding MD, Fox HE, Allen GR, Davidson N, Ferdaña ZA, Finlayson M, Halpern BS, Jorge MA, Lombana A, Lourie SA, Martin KD, McManus E, Molnar J, Recchia CA, Robertson J (2007). Marine Ecoregions of the World: a bioregionalization of coast and shelf areas. BioScience 57: 573-583. doi: 10.1641/B570707. Data URL: http://data.unep-wcmc.org/datasets/38
 # Spalding MD, Agostini VN, Rice J, Grant SM (2012). Pelagic provinces of the world): a biogeographic classification of the world’s surface pelagic waters. Ocean and Coastal Management 60: 19-30. DOI: 10.1016/j.ocecoaman.2011.12.016. Data URL: http://data.unep-wcmc.org/datasets/38
 # js/html version: https://github.com/cywhale/all_for_it_learning/blob/master/js/js_leaflet_wms_meow.html
+# mapview/shiny/leaflet/extension: https://github.com/cywhale/openocean/blob/master/map/app_mapview_try01.R
 
 library(sf)
 library(ggplot2)
@@ -21,6 +22,10 @@ ggplot(br) + geom_sf() +
 ## https://gis.unep-wcmc.org/arcgis/rest/services/marine/WCMC_036_MEOW_PPOW_2007_2012/MapServer/
 ## Legend
 ## https://gis.unep-wcmc.org/arcgis/rest/services/marine/WCMC_036_MEOW_PPOW_2007_2012/MapServer/legend?f=json
+## jt <- curl('https://gis.unep-wcmc.org/arcgis/rest/services/marine/WCMC_036_MEOW_PPOW_2007_2012/MapServer?f=pjson') %>%
+##       jsonlite::fromJSON(jt)
+## I don't know if it work or not (plot geojson on map), such as leaflet.extras do
+## https://rpubs.com/bhaskarvk/geojsonv2
 library(leaflet)
 library(leaflet.extras)
 
@@ -46,7 +51,5 @@ leaflet() %>%
 library(mapview)
 mapviewOptions(basemaps = c("Esri.WorldShadedRelief"))
 mapview(br, zcol = c("PROVINC"))
-
-
 
 
