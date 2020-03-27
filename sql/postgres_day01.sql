@@ -1,4 +1,4 @@
-/* create a database if might use chinese character */
+/* create a database if having chinese character */
 
 CREATE DATABASE mydb
 ENCODING = 'UTF8'
@@ -24,4 +24,17 @@ alter table mytbl alter mycol2 type date using(mycol2::date);
 
 alter table mytbl alter mycol3 type text;
 
-
+/* After batch writing, find some replicated rows or ID */
+/* check it */
+ select myid, count(*) from mytbl group by myid having count(*) > 1;
+ 
+/* https://dba.stackexchange.com/questions/138320/duplicate-rows-how-to-remove-one
+   But indeed, it removes all duplicated ones. Need to find some way that can delete only one */ 
+with d as 
+  ( select myid, row_number() over (partition by t.myid) as rn 
+    from mytbl as t 
+  ) 
+delete from mytbl as t 
+using d 
+where d.rn > 1 
+  and d.myid = t.myid; 
