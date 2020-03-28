@@ -38,3 +38,10 @@ delete from mytbl as t
 using d 
 where d.rn > 1 
   and d.myid = t.myid; 
+
+/* Materialized view for a big table for frequently querying */
+
+CREATE MATERIALIZED VIEW my_mview AS SELECT * FROM mytbl where lng >= 90 AND lng <=140 AND lat >= 0 AND lat <= 40 AND spname is NOT NULL;
+/* Refresh when data updated */
+refresh materailized view my_mview;
+
