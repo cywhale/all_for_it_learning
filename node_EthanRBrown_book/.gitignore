@@ -1,7 +1,7 @@
 #ignore node_modules
 node_modules
 pub
+ver_bak
 *.bak
 *~
 .DS_Store
-**/0.*.js
