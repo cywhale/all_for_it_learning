@@ -4,4 +4,4 @@ pub
 *.bak
 *~
 .DS_Store
-^0*-*.js
+**/0.*.js

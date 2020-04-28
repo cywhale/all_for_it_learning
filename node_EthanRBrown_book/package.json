@@ -1,0 +1,23 @@
+{
+  "name": "node_EthanRBrown_book",
+  "version": "1.0.0",
+  "description": "book example about Meadowlark Travel",
+  "main": "meadowlark.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "",
+  "license": "(MIT OR GPL-3.0)",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^4.0.3"
+  },
+  "devDependencies": {
+    "jest": "^25.4.0",
+    "portfinder": "^1.0.25",
+    "puppeteer": "^3.0.1"
+  }
+}
