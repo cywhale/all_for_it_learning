@@ -1,0 +1,7 @@
+#ignore node_modules
+node_modules
+pub
+*.bak
+*~
+.DS_Store
+^0*-*.js
