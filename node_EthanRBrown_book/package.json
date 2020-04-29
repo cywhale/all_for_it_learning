@@ -4,7 +4,8 @@
   "description": "book example about Meadowlark Travel",
   "main": "meadowlark.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint meadowlark.js lib"
   },
   "keywords": [
     "node"
@@ -16,6 +17,7 @@
     "express-handlebars": "^4.0.3"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
     "jest": "^25.4.0",
     "portfinder": "^1.0.25",
     "puppeteer": "^3.0.1"
