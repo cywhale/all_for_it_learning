@@ -14,3 +14,10 @@ git push origin master:master --progress
 git add . # after that can use git add -A
 git commit -m "git a local folder to a repo subdir"
 git push origin master
+
+# A withdraw from git commit should be careful by using git reset HEAD^, that delete your local file if you commit local edit
+# Recover it:
+git reflog # to see which commit you want to recover
+## 42a259f HEAD@{2}: reset: moving to HEAD^
+## 6829620 HEAD@{3}: commit: new commit
+git reset --hard 682920 ## save local edit by --hard
