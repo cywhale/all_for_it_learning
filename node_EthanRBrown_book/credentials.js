@@ -3,6 +3,7 @@ const credentials = require(`./.credentials.${env}`)
 
 module.exports = {
   credentials,
-  cookieSec: credentials.cookieSecret, //: 'coming strength nothing half',
+  pg_credi: credentials.postgres,
+  cookieSec: credentials.cookieSecret,
 }
 
