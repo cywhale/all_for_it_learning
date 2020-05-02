@@ -2,6 +2,10 @@
 node_modules
 pub
 ver_bak
+coverage
+data
+.vscode
 *.bak
 *~
 .DS_Store
+.credentials.*
