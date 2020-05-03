@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 const expressSession = require('express-session')
 const MongoStore = require('connect-mongo')(expressSession)
 //const RedisStore = require('connect-redis')(expressSession)
+const cors = require('cors')
 
 const handlers = require('./lib/handlers')
 const weatherMiddlware = require('./lib/weather')
@@ -30,6 +31,8 @@ app.engine('handlebars', expressHandlebars({
   },
 }))
 app.set('view engine', 'handlebars')
+
+app.use('/api', cors())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
