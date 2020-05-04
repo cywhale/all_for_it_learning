@@ -32,7 +32,7 @@ var objt = [1, 2, 3, 4]
 var g1  = {
   id: 'banana',
   name: 'BB',
-  price: 10,
+  price: 15,
   currency: 'USD',
   produce: {
     year: 2010,
@@ -62,7 +62,7 @@ console.log(g1s.banana)
 var sell = 'seven'
 g1[sell] = {
   discount: 0.5,
-  price: 15,
+  price: 12,
   customer: ['normal', 'vip'],
 }
 console.log("g1[].price", g1[sell].price)
@@ -74,3 +74,46 @@ console.log(char2)
 ;[char1, char2] = [char2, char1] //swap by array destructuring
 console.log(char1) 
 console.log(char2)
+
+//Destructuring objects as function parameters
+var getGoodSell = ({ produce, price  = 10, discount = 0.9 }) => ({
+  pdate: produce.year + '/' + produce.month + '/' + produce.day,
+  sell: price *  discount
+})
+
+console.log(getGoodSell(g1).pdate)
+console.log(getGoodSell(g1).sell)
+console.log(getGoodSell({produce: {year: 2002, month: 11, day: 13}, price: g1[sell].price}))
+
+function splitDate(date) {
+  var rdate = /(\d+).(\d+).(\d+)/
+  return rdate.exec(date) 
+}
+
+var [d0, year, month, day] = splitDate(getGoodSell(g1).pdate) //the first is reserved for original input
+console.log(d0)
+console.log(year)
+console.log(month)
+console.log(day)
+
+//spread operator ...
+var sumall = (...num) => num.reduce((total, next) => total + next )
+console.log(sumall(1,2,5))
+
+var cast = (...args) => [...args]
+console.log(cast('a','b','ddd'))
+var cast_hx = (pre = 'first', pos = 'last', ...args) => [pre, ...args, pos]
+console.log(cast_hx(pre = '1', pos = '0', 'a','b','ddd')) 
+console.log([...cast_hx(pre = '1', pos = '0', 'a','b','ddd').join("")]) //expand with each character
+
+// spread op use as fn apply
+var multiply = (l, r) => l * r
+console.log(multiply(...[2, 3]))
+
+var d0 = new Date(...[2013, 3, 5]) //otherwise new (Date.bind.apply(Date, [null, 2013, 3,5]))
+console.log(d0)
+
+
+
+
+
