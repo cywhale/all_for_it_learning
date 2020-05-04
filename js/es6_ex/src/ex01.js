@@ -1,3 +1,4 @@
+// arrow, object literals, destructuring assignment
 // arrow function is not the same as anonymous func
 function puz() {
   return function () {
@@ -27,7 +28,7 @@ var objt = [1, 2, 3, 4]
   .filter(value => value > 2)
   .forEach(value => console.log(value)) 
 
-// obj literals is us {} to simplify to declare a obj key:value
+// obj literals is use {} to simplify to declare a obj key:value
 var g1  = {
   id: 'banana',
   name: 'BB',
@@ -49,13 +50,14 @@ console.log(abbrevCode)
 var { produce: { day: dayProduce } } = g1
 console.log(dayProduce) // alias in nested attribute
 
-// cannot do this Destructuring assignment. Why?
-//var { quality: { size: 'medium' } } = g1 // vsmmp
-//console.log(quality) // assign not-existed attribute
+// Cannot do this Destructuring assignment. Why?
+// var { quality: { size: 'medium' } } = g1 // vsmmp
+// console.log(quality) // assign not-existed attribute
 
 var g1s = {
   [g1.id]: g1
 }
+console.log(g1s.banana)
 
 var sell = 'seven'
 g1[sell] = {
@@ -63,14 +65,12 @@ g1[sell] = {
   price: 15,
   customer: ['normal', 'vip'],
 }
+console.log("g1[].price", g1[sell].price)
 
 var [char1, char2] = g1[sell].customer //Array Destructuring 
 console.log(char1) // so it's just a convenient way to assign each time for char1, char2
 console.log(char2)
+
 ;[char1, char2] = [char2, char1] //swap by array destructuring
 console.log(char1) 
 console.log(char2)
-console.log("ori obj:", g1s)
-console.log(g1s.banana)
-console.log("g1[sell]: ", g1[sell])
-console.log("g1[].price", g1[sell].price)

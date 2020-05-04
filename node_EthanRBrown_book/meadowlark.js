@@ -61,6 +61,8 @@ app.use(express.static(__dirname + '/pub'))
 app.use(weatherMiddlware)
 
 app.get('/', handlers.home)
+app.get('/about', handlers.about)
+//app.get('/greeting', handlers.greeting)
 
 // handlers for browser-based form submission
 app.get('/newsletter-signup', handlers.newsletterSignup)
@@ -100,6 +102,14 @@ app.post('/notify-me-when-in-season', handlers.notifyWhenInSeasonProcess)
 
 // utility routes
 app.get('/set-currency/:currency', handlers.setCurrency)
+
+// api
+const vhost = require('vhost')
+app.get('/', vhost('api.*', handlers.getVacationsApi))
+app.get('/api/vacations', handlers.getVacationsApi)
+app.get('/api/vacation/:sku', handlers.getVacationBySkuApi)
+app.post('/api/vacation/:sku/notify-when-in-season', handlers.addVacationInSeasonListenerApi)
+app.delete('/api/vacation/:sku', handlers.requestDeleteVacationApi)
 
 app.use(handlers.notFound)
 app.use(handlers.serverError)

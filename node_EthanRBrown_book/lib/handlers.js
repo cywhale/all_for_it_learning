@@ -1,8 +1,12 @@
 const db = require('../db')
+const fortune = require('./fortune')
 
 exports.api = {}
 
 exports.home = (req, res) => res.render('home')
+
+exports.about = (req, res) =>
+  res.render('about', { fortune: fortune.getFortune() })
 
 // **** these handlers are for browser-submitted forms
 exports.newsletterSignup = (req, res) => {
@@ -135,6 +139,26 @@ exports.notifyWhenInSeasonProcess = async (req, res) => {
   const { email, sku } = req.body
   await db.addVacationInSeasonListener(email, sku)
   return res.redirect(303, '/vacations')
+}
+
+exports.getVacationsApi = async (req, res) => {
+  const vacations = await db.getVacations({ available: true })
+  res.json(vacations)
+}
+
+exports.getVacationBySkuApi = async (req, res) => {
+  const vacation = await db.getVacationBySku(req.params.sku)
+  res.json(vacation)
+}
+
+exports.addVacationInSeasonListenerApi = async (req, res) => {
+  await db.addVacationInSeasonListener(req.params.sku, req.body.email)
+  res.json({ message: 'success' })
+}
+
+exports.requestDeleteVacationApi = async (req, res) => {
+  const { email, notes } = req.body
+  res.status(500).json({ message: 'not yet implemented' })
 }
 
 exports.notFound = (req, res) => res.render('404')

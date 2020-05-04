@@ -77,9 +77,11 @@ Vacation.find((err, vacations) => {
 })
 
 const VacationInSeasonListener = require('./models/vacationInSeasonListener')
+const Attraction = require('./models/attraction')
 
 module.exports = {
   getVacations: async (options = {}) => Vacation.find(options),
+  getVacationBySku: async sku => Vacation.findOne({ sku }),
   addVacationInSeasonListener: async (email, sku) => {
     await VacationInSeasonListener.updateOne(
       { email },
@@ -87,6 +89,8 @@ module.exports = {
       { upsert: true }
     )
   },
+  getAttractions: async (options = {}) => Attraction.find(options),
+  addAttraction: async attraction => new Attraction(attraction).save(),
 }
 
 module.exports.mongooseConn = db

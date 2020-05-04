@@ -20,7 +20,7 @@ describe('API tests', () => {
     expect(typeof vacation0.price).toBe('number')
   })
 
-  test('GET /api/vacation/:sku', async() => {
+  test('GET /api/vacation/HR199', async() => {
     const vacations = await _fetch('get', '/api/vacations')
     expect(vacations.length).not.toBe(0)
     const vacation0 = vacations[0]
@@ -36,7 +36,7 @@ describe('API tests', () => {
     await _fetch('post', `/api/vacation/${vacation0.sku}/notify-when-in-season`,
       { email: 'test@meadowlarktravel.com' })
   })
-
+/*
   test('DELETE /api/vacation/:sku', async() => {
     const vacations = await _fetch('get', '/api/vacations')
     expect(vacations.length).not.toBe(0)
@@ -44,5 +44,5 @@ describe('API tests', () => {
     // at this moment, all we can do is make sure the HTTP request is successful
     await _fetch('delete', `/api/vacation/${vacation0.sku}`)
   })
-
+*/
 })
