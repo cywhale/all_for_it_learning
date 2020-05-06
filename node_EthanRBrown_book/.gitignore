@@ -4,6 +4,7 @@ pub
 ver_bak
 coverage
 data
+server
 .vscode
 *.bak
 *~
