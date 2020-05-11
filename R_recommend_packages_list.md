@@ -13,3 +13,8 @@ The recommended packages, will be updated if I discuss with somebody else...
 3. If you're interested in handling GIS data, **sf** package is a new version based on older **sp** package. 
 * Check https://r-spatial.github.io/sf/articles/sf1.html
 
+#### 20200511 Woth reading and re-thinking: TidyverseSkeptic by Dr. Norm Matloff
+
+1. github: [TidyverseSkeptic](https://github.com/matloff/TidyverseSkeptic])
+
+2. A benchmark about base-R, tidyverse/readr, data.table::fread, vroom, and serializing data by base-R(RDS), fst, feather package, please see [Speeding up Reading and Writing in R](https://www.danielecook.com/speeding-up-reading-and-writing-in-r/) by Daniel E. Cook 
