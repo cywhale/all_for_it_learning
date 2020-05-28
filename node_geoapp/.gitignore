@@ -1,0 +1,12 @@
+#ignore node_modules
+node_modules
+pub
+ver_bak
+coverage
+data
+server
+.vscode
+*.bak
+*~
+.DS_Store
+.credentials.*
