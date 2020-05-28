@@ -21,3 +21,19 @@ git reflog # to see which commit you want to recover
 ## 42a259f HEAD@{2}: reset: moving to HEAD^
 ## 6829620 HEAD@{3}: commit: new commit
 git reset --hard 682920 ## save local edit by --hard
+
+# Condition
+# git push rejected: Updates were rejected because the remote contains work that you do not have locally.
+git pull --rebase 
+# error: Cannot pull with rebase: You have unstaged changes.
+git status
+#On branch master
+#Your branch is ahead of 'origin/master' by 1 commit.
+#  (use "git push" to publish your local commits)
+#Changes not staged for commit:
+#  (use "git add/rm <file>..." to update what will be committed)
+#  (use "git checkout -- <file>..." to discard changes in working directory)
+#	deleted:    ../YourDir/YourFile
+git checkout -- ../YourDir/YourFile
+# then git pull,.. git push...
+
