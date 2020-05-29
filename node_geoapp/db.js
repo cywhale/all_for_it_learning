@@ -4,7 +4,7 @@ const { credentials } = require('./credentials')
 const mongoose = require('mongoose')
 const env = process.env.NODE_ENV || "development"
 
-let dbname = "testgeo"
+let dbname = "testgeo" //"layercollection" is a collection under testgeo
 const options = {
   dbName: dbname, 
   keepAlive: 1,
@@ -20,10 +20,10 @@ if(!connectionString) {
   process.exit(1)
 }
 
-mongoose.connect(connectionString, options) //+ '/' + dbname
+mongoose.connect(connectionString, options)
 mongoose.Promise = global.Promise
 
-const db = mongoose.connection //.useDB(dbname)
+const db = mongoose.connection
 db.on('error', err => {
   console.error('MongoDB error: ' + err.message)
   process.exit(1)

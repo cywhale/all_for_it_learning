@@ -27,6 +27,13 @@ let GeoSchema = new Schema({
   }
 });
 
+let layerSchema = new Schema({
+    name: String,
+    type: Schema.Types.Mixed
+});
+
 const Geo = mongoose.model('Geo', GeoSchema)
 module.exports = Geo
 
+const jLayer = mongoose.model('jLayer', layerSchema, 'layercollection')
+module.exports.jlayer = jLayer

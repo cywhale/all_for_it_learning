@@ -1,5 +1,6 @@
 // routes/geo.route.js
 const express = require('express');
+const Geo = require('../models/geo.model');
 const router = express.Router();
 
 // Require the controllers
@@ -32,5 +33,22 @@ router.put('/update/:id', geo_controller.feature_update);
 /* DELETE */
 router.delete('/delete/:id', geo_controller.geo_delete);
 //localhost:3000/geo/delete/<featureid>
+
+// routes/index.js
+/* GET home page. */
+router.get('/', function(req, res) {
+  res.render('index', { title: 'Map' });
+});
+
+/* GET Map page. */
+router.get('/map', function(req,res) {
+    Geo.find({},{}, function(e, geo){
+        res.render('map', {
+            "jmap" : geo,
+            lat : 40.78854,
+            lng : -73.96374
+        });
+    });
+});
 
 module.exports = router;

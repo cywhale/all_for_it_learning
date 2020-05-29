@@ -1,5 +1,6 @@
 // controllers/geo.controller.js
 const Geo = require('../models/geo.model');
+const jlayer = Geo.jlayer
 
 //Simple version, without validation or sanitation
 exports.test = function (req, res) {
@@ -21,44 +22,100 @@ exports.geo_create = function (req, res, next) {
     })
 }
 
+// Use Async.parallel: Read Multiple Collections from MongoDB without Callback Hell
+// https://bit.ly/2yO9Ala
+
 /* READ */
 // return list of all geometry
 exports.geo_list = function (req, res) {
-    Geo.find({},{'geometry': 1}, function (err, geo) {
+   var jdt = {};
+
+   Geo.find({},{'geometry': 1}, function (err, geo) {
         if (err) return next(err);
-        res.send(geo);
-    })
+
+        jdt.geos = geo;
+
+        jlayer.find({},{'geometry': 1}, function (err2, geo2) {
+            if (err2) return next(err2);
+
+            jdt.jcol = geo2;
+            res.json(jdt)
+        });
+    });
 };
 
 //return item that matches name
 exports.geo_name = function (req, res) {
+    //var jdt = {};
+
     Geo.findOne({ name: req.params.name },{}, function (err, geo) {
         if (err) return next(err);
+
+        //jdt.geos = geo;
+
+        //jlayer.findOnne({ name: req.params.name },{}, function (err2, geo2) {
+        //    if (err2) return next(err2);
+
+        //    jdt.jcol = geo2;
+        //    res.send(jdt)
+        //});
         res.send(geo);
     })
 };
 
 //return item that matches id
 exports.geo_id = function (req, res) {
+    var jdt = {};
+
     Geo.findById(req.params.id, function (err, geo) {
         if (err) return next(err);
-        res.send(geo);
+
+        jdt.geos = geo;
+
+        jlayer.findById(req.params.id, function (err2, geo2) {
+            if (err2) return next(err2);
+
+            jdt.jcol = geo2;
+            res.send(jdt)
+        });
+        //res.send(geo);
     })
 };
 
 //return all names only
 exports.geo_allnames = function (req, res) {
+    //var jdt = {};
+
     Geo.find({},{'name': 1}, function (err, geo) {
         if (err) return next(err);
+
+        //jdt.geos = geo;
+
+        //jlayer.find({},{'name': 1}, function (err2, geo2) {
+        //    if (err2) return next(err2);
+
+        //    jdt.jcol = geo2;
+        //    res.send(jdt)
+        //});
         res.json(geo);
     });
 };
 
 //return geometry only
 exports.geo_all = function(req,res) {
+    var jdt = {};
     Geo.find({},{}, function(err, geo){
         if (err) return next(err);
-        res.send(geo)
+
+        jdt.geos = geo;
+
+        jlayer.find({},{}, function (err2, geo2) {
+            if (err2) return next(err2);
+
+            jdt.jcol = geo2;
+            res.send(jdt)
+        });
+        //res.send(geo)
     });
 };
 
