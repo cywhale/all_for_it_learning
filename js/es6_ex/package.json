@@ -17,5 +17,10 @@
     "babel-preset-env": "^1.7.0",
     "braces": "^2.3.2",
     "eslint": "^6.8.0"
+  },
+  "dependencies": {
+    "async": "^3.2.0",
+    "form-data": "^3.0.0",
+    "node-fetch": "^2.6.0"
   }
 }
