@@ -1,0 +1,25 @@
+{
+  "name": "node_fastify_geoapp",
+  "version": "1.0.0",
+  "description": "try node/mongo/fastify/geo app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "geojson",
+    "fastify"
+  ],
+  "author": "cywhale",
+  "license": "ISC",
+  "dependencies": {
+    "boom": "^7.3.0",
+    "fastify": "^2.14.1",
+    "fastify-plugin": "^1.6.1",
+    "fastify-static": "^2.7.0",
+    "mongoose": "^5.9.16",
+    "path": "^0.12.7",
+    "point-of-view": "^3.8.0",
+    "pug": "^3.0.0"
+  }
+}
