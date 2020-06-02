@@ -14,12 +14,19 @@ exports.rootx = async (req, res) => {
 
 exports.map = async (req,res) => {
   try {
-    let geo = await Geo.find({},{});
-    res.view('../views/map.pug', {
-      "jmap" : geo,
-      lat : 40.78854,
-      lng : -73.96374
-    }); // see aboving ans for err: Promise not fulfilled when using res.view #144
+    //let jgeo = 
+    await Geo.find({},{}, function(e, geo) {
+      //let jcol = await 
+      //jlayer.find({},{}, function(e2, jcol) {
+      //let geo = [...jgeo, ...jcol]; //Object.assign({},jgeo, jcol);
+      //console.log(geo);
+        res.view('../views/map.pug', {
+          "jmap" : geo,
+          lat : 40.78854,
+          lng : -73.96374
+        }); // see aboving ans for err: Promise not fulfilled when using res.view #144
+      //});
+    });
     return res;
   } catch (err) {
     throw boom.boomify(err)
@@ -51,18 +58,17 @@ exports.geo_create = async (req, res) => { //req, res, next
 exports.geo_list = async (req, res) => {
    try {
 
-     let jgeo = await Geo.find({}, {'geometry': 1}) //, function (err, geo) {
+     let jgeo = await Geo.find({}, {'geometry': 1}); //, function (err, geo) {
         //if (err) return next(err);
         //jdt.geos = geo;
 
-     let results = Promise.all(
-       jgeo.map( jdt => jlayer.find({}, {'geometry': 1}) ) //, function (err2, geo2) {
+     let jcol = await jlayer.find({}, {'geometry': 1}); //, function (err2, geo2) {
          //if (err2) return next(err2);
          //jdt.jcol = geo2;
          //res.json(jdt)
        //}
-     );
-     console.log(results);
+     let results = [...jgeo, ...jcol];
+     // console.log(results);
      return results; //res.json
      //});
   } catch (err) {
@@ -74,9 +80,10 @@ exports.geo_list = async (req, res) => {
 exports.geo_name = async (req, res) => {
   try {
 
-    let geo = await Geo.findOne({ name: req.params.name },{}); //, function (err, geo) {
-        //if (err) return next(err);
-    return geo;
+    let jgeo = await Geo.findOne({ name: req.params.name },{});
+    //let jcol = await jlayer.findOne({ name: req.params.name },{});
+    //let results = [jgeo, jcol];
+    return jgeo; //results;
     //})
   } catch (err) {
     throw boom.boomify(err)
@@ -86,11 +93,12 @@ exports.geo_name = async (req, res) => {
 //return item that matches id
 exports.geo_id = async (req, res) => {
   try {
-     let jgeo = await Geo.findById(req.params.id)
-     let results = Promise.all(
-       jgeo.map( jdt => jlayer.findById(req.params.id) )
-     );
-     console.log(results);
+     let jgeo = await Geo.findById(req.params.id);
+     //let results = Promise.all(
+     //jgeo.map( jdt => 
+     let jcol = await jlayer.findById(req.params.id);
+     let results = [...jgeo, ...jcol];
+     //console.log(results);
      return results; //res.json
   } catch (err) {
     throw boom.boomify(err)
@@ -101,9 +109,10 @@ exports.geo_id = async (req, res) => {
 exports.geo_allnames = async (req, res) => {
   try {
 
-    let geo = await Geo.find({},{'name': 1}); //, function (err, geo) {
-        //if (err) return next(err);
-    return geo; //res.json
+    let jgeo = await Geo.find({},{'name': 1});
+    let jcol = await jlayer.find({},{'name': 1});
+    let results = [...jgeo, ...jcol];
+    return results; //res.json
     //});
   } catch (err) {
     throw boom.boomify(err)
@@ -113,11 +122,9 @@ exports.geo_allnames = async (req, res) => {
 //return geometry only
 exports.geo_all = async (req,res) => {
   try {
-     let jgeo = await Geo.find({},{})
-     let results = Promise.all(
-       jgeo.map( jdt => jlayer.find({},{}) )
-     );
-     console.log(results);
+     let jgeo = await Geo.find({},{});
+     let jcol = await jlayer.find({},{});
+     let results = [...jgeo, ...jcol];
      return results; //res.json
   } catch (err) {
     throw boom.boomify(err)
@@ -127,7 +134,7 @@ exports.geo_all = async (req,res) => {
 /* UPDATE */
 exports.feature_update = async (req, res) => {
   try {
-    await Geo.findByIdAndUpdate(req.params.id, {$set: req.body})
+    await Geo.findByIdAndUpdate(req.params.id, {$set: req.body});
     res.send('Geometry updated.');
   } catch (err) {
     throw boom.boomify(err)
@@ -137,7 +144,7 @@ exports.feature_update = async (req, res) => {
 /* DELETE */
 exports.geo_delete = async (req, res) => {
   try {
-    await Geo.findByIdAndRemove(req.params.id)
+    await Geo.findByIdAndRemove(req.params.id);
     res.send('Deleted successfully!');
   } catch (err) {
     throw boom.boomify(err)
