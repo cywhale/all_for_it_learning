@@ -31,22 +31,12 @@ function coordTo3d(coords, sphere_radius, z_is_height = false) {
     return out;
 }
 
-
 geoline2Path = function(geojson) {
-    //const destruct = (obj, ...keys) =>
-    //    keys.reduce((a, c) => ({ ...a, [c]: obj[c] }), {});
-    //const [...obj] =
     return geojson.features.map(function(feature) {
-        //let id = feature.properties.id;
-        //let ct =
         return feature.geometry.coordinates.map(function(coord) {
             return [parseFloat(coord[1]), parseFloat(coord[0])];
         });
-        //let dt = {[id]: [...ct]}; // { id: [id], coords: [...ct] };
-        //console.log(dt);
-        //return dt;
     });
-    //return obj; //destruct(obj, 'id', 'coords');
 };
 // Only return coordinates, but fail to return {{id: [coordinates]}, {...}}
 let o1 = geoline2Path(geo1);
@@ -70,5 +60,36 @@ console.log(o2[1]);
 let geo2 = gid.reduce((obj, x, i) => 
       Object.assign({}, obj, {[x]: [...o2[i]]}), {});
 console.log(geo2);
+// console.log(Object.keys(geo2))
+// console.log(Object.values(geo2))
 // if all keys the same ({id: , coords:}, cannot use Object.assign, will be merged, not concat)
 // Next if has density return {id: , density: coord[2], to3d: cood_array after coordTo3d}
+
+let geox = {};
+gidx.forEach((i) => {
+   console.log(i);
+   //geox[gid[i]] = [...o2[i]]; //then geox will equal geo2
+   geox[i] = {id: gid[i], coords: [...o2[i]]};
+});
+
+console.log(geox);
+console.log(geox[1].coords)
+
+// so another version to return {id: ,coords: }
+geolinexPath = function(geojson) {
+    //const destruct = (obj, ...keys) =>
+    //    keys.reduce((a, c) => ({ ...a, [c]: obj[c] }), {});
+    //const [...obj] =
+    return geojson.features.map(function(feature) {
+        let id = feature.properties.id;
+        let ct = feature.geometry.coordinates.map(function(coord) {
+            return [parseFloat(coord[1]), parseFloat(coord[0])];
+        });
+        let dt = { id: [id], coords: [...ct] };
+        return dt;
+    });
+    //return obj; //destruct(obj, 'id', 'coords');
+};
+let o3 = geolinexPath(geo1);
+console.log(o3);
+console.log(o3[1].coords)
