@@ -15,6 +15,23 @@ const geo1 = {
         ]}}
     ]};
 
+function coordTo3d(coords, sphere_radius, z_is_height = false) {
+    const lambda = coords[0] * Math.PI / 180;
+    const phi = coords[1] * Math.PI / 180;
+    let radius = sphere_radius;
+    if (z_is_height) {
+        radius = coords[2] + sphere_radius;
+    }
+    let rphi = Math.cos(phi) * radius;
+    let out = [
+        Math.cos(lambda) * rphi,
+        Math.sin(phi) * radius,
+        -1.0 * Math.sin(lambda) * rphi
+    ];
+    return out;
+}
+
+
 geoline2Path = function(geojson) {
     //const destruct = (obj, ...keys) =>
     //    keys.reduce((a, c) => ({ ...a, [c]: obj[c] }), {});
@@ -34,3 +51,24 @@ geoline2Path = function(geojson) {
 // Only return coordinates, but fail to return {{id: [coordinates]}, {...}}
 let o1 = geoline2Path(geo1);
 console.log(o1);
+
+var gid = geo1.features.map(function(feature) { return feature.properties.id; });
+let gidx = [...gid.keys()];
+console.log(gid);
+
+var o2 = o1.map((x) => { 
+    return x.map((coord) => {
+        return coordTo3d(coord, sphere_radius = 10, z_is_height = false);
+    }); 
+});
+console.log(o2[0]);
+console.log(o2[1]);
+
+//let geo2 = gidx.map((obj, i) => Object.assign({}, obj, 
+//   {id: gid[i], coords: [...o2[i]]}));
+
+let geo2 = gid.reduce((obj, x, i) => 
+      Object.assign({}, obj, {[x]: [...o2[i]]}), {});
+console.log(geo2);
+// if all keys the same ({id: , coords:}, cannot use Object.assign, will be merged, not concat)
+// Next if has density return {id: , density: coord[2], to3d: cood_array after coordTo3d}
