@@ -92,4 +92,32 @@ geolinexPath = function(geojson) {
 };
 let o3 = geolinexPath(geo1);
 console.log(o3);
-console.log(o3[1].coords)
+console.log(o3[1].coords);
+
+let coords = o3[1].coords.slice();
+let tmpc = coords.slice().reverse();
+let newc = [].concat(coords, tmpc);
+console.log(newc);
+
+console.log("Convert geojson point")
+
+const ptgeo1 = {"features": [
+    {"geometry": {"coordinates": [122.208, 25.4158], "type": "Point"}, "properties": {"id": 0, "inLine": 1, "name": "4789"}, "type": "Feature"}, 
+    {"geometry": {"coordinates": [122.677, 25.249], "type": "Point"}, "properties": {"id": 1, "inLine": 1, "name": "4790"}, "type": "Feature"}, 
+    {"geometry": {"coordinates": [123.1503, 25.0818], "type": "Point"}, "properties": {"id": 2, "inLine": 1, "name": "4791"}, "type": "Feature"}, 
+    {"geometry": {"coordinates": [121.4918, 25.6639], "type": "Point"}, "properties": {"id": 3, "inLine": 1, "name": "4792"}, "type": "Feature"}, 
+    {"geometry": {"coordinates": [120.776, 25.9018], "type": "Point"}, "properties": {"id": 4, "inLine": 1, "name": "4793"}, "type": "Feature"}, 
+    {"geometry": {"coordinates": [120.1021, 26.1913], "type": "Point"}, "properties": {"id": 5, "inLine": 1, "name": "4794"}, "type": "Feature"},
+    {"geometry": {"coordinates": [121.7322, 26.6148], "type": "Point"}, "properties": {"id": 33, "inLine": 1, "name": "4822"}, "type": "Feature"}], 
+    "type": "FeatureCollection", 
+    "crs": {"properties": {"name": "EPSG:4326"}, "type": "name"}, "cPlanInfo": {"proj_name": "", "work_dock_chk": false, "specialNeed": "", "datetime_dep": "2019-09-18 10:00", "bigItems": "", "rv": 2}
+};
+geojson2Point = function(geojson) {
+    return geojson.features.map(function(feature) {
+      let coord = feature.geometry.coordinates;
+      let id = feature.properties.name; 
+      let dt = { id: [id], coords: [parseFloat(coord[1]), parseFloat(coord[0])] };
+      return dt;
+    });
+};
+console.log(geojson2Point(ptgeo1));
