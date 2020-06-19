@@ -8,6 +8,14 @@ git submodule update --init --recursive
 git push origin master:master --progress
 # git fetch --progress --prune origin
 
+# remove a submodule if give wrong subdirectory
+# remove Your_submodule from .gitmodules for 3-lines description
+# remove this submodule in .git/config 
+# git rm --cached Your_submodule cause error: fatal: Please, stage your changes to .gitmodules or stash them to proceed
+git add .gitmodules
+git rm --cached Your_local_path_to_submodule/Your_submodule
+# then delete or mv this subdirectory of submodule
+
 # Similar to git a local folder to a repo subdirectory after git clone 
 # But must put your local folder (copy/move) under the directory where you git clone
 # cd git_clone_dir/your_local_folder
