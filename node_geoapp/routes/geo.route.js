@@ -43,6 +43,7 @@ router.get('/', function(req, res) {
 /* GET Map page. */
 router.get('/map', function(req,res) {
     Geo.find({},{}, function(e, geo){
+        console.log(geo);
         res.render('map', {
             "jmap" : geo,
             lat : 40.78854,
