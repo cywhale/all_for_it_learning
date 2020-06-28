@@ -81,7 +81,7 @@ geolinexPath = function(geojson) {
     //    keys.reduce((a, c) => ({ ...a, [c]: obj[c] }), {});
     //const [...obj] =
     return geojson.features.map(function(feature) {
-        let id = feature.properties.id;
+        let id = feature.properties.id? feature.properties.id: feature.properties.NAME;
         let ct = feature.geometry.coordinates.map(function(coord) {
             return [parseFloat(coord[1]), parseFloat(coord[0])];
         });
@@ -121,3 +121,37 @@ geojson2Point = function(geojson) {
     });
 };
 console.log(geojson2Point(ptgeo1));
+
+geoMultiPoly = function(geojson) {
+    console.log(geojson.features.length);
+    return geojson.features.map(function(feature) {
+        let id = feature.properties.id? feature.properties.id: feature.properties.NAME;
+        let ct = feature.geometry.coordinates.map(function(coordarr) {
+          return coordarr.map(function(coords) { 
+            return coords.map(function(coord) {
+              return [parseFloat(coord[1]), parseFloat(coord[0])];
+            });
+          });
+        });
+        let dt = { id: [id], coords: [...ct] };
+        return dt;
+    });
+    //return obj; //destruct(obj, 'id', 'coords');
+};
+
+let geo3 = {
+    "type":"FeatureCollection",
+    "features":[{"type":"Feature","properties":{
+        "NAME":"TEST03"},
+        "geometry":{"type":"MultiPolygon","coordinates":[[[[121.8512,24.6288],[121.8529,24.6258],[121.851,24.6243]],[[121.8527,24.6166],[121.8527,24.6167],[121.8527,24.6166]]]]}},
+    {"type":"Feature","properties":{
+        "NAME":"TEST03b"},
+        "geometry":{"type":"MultiPolygon","coordinates":[[[[121.3074,23.2082
+    ],[121.3077,23.2082],[121.3077,23.2082],[121.8512,24.6288]],[[121.3078,23.2083],[121.5999,24.9029],[121.5999,24.9031],[121.6016,24.9032]]]]}}]
+}
+let o4 = geoMultiPoly(geo3);
+console.log(o4)
+console.log(o4[1].coords);
+console.log(o4[1].coords[0][0]);
+console.log(o4[1].coords[0][1]);
+
