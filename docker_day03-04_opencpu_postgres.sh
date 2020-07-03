@@ -65,9 +65,26 @@ exit
 exit
 
 docker commit pgis pgis #:tag if need tag
+
+# -----------------------------------------------------------------------------------------
+# plumber API
+# (Not work: Download file from plumber GET API within docker container got error 500
+# Dockerfile from trestletech/plumber
+# RUN R -e "install.packages(c('Your_Pkgs'))"
+# COPY ./run_Your_App.R /root/
+# CMD ["/root/run_Your_App.R"]
+# in run_Your_App.R
+# function(...) {
+#    fs <- file.path(tempdir(), "data.csv")
+#    fwrite(dt, fs)
+#    include_file(fs, res, "text/csv")
+# }
+# ######## It can only work without Docker, failed if running within docker ###############
+docker build --network host -t plumb ./
+docker run -v /tmp/Your_app_dir:/tmp -it --rm --name plumb -p 8001:8000 -d plumb
+
 # -----------------------------------------------------------------------------------------
 # (to be continued)
-
 # -----------------------------------------------------------------------------------------
 #Deploy shiny: docker run -P --name testss --link testpg:testpg -p 8038:3838 testss:corona /usr/bin/shiny-server
 
