@@ -47,3 +47,17 @@ git status
 #	deleted:    ../YourDir/YourFile
 git checkout -- ../YourDir/YourFile
 # then git pull,.. git push...
+
+# But if you have two workspaces to modify the same repository, and get
+# error: Cannot pull with rebase: You have unstaged changes.
+# You still want to rebase, but not drop your changes (in another workspace)
+git fetch
+# 720a32f..e578c68  master     -> origin/master
+git rebase --autostash FETCH_HEAD
+# Created autostash: 3e4d3a0
+# HEAD is now at 720a32f read https cert in async & try auto-push
+# First, rewinding head to replay your work on top of it...
+# Fast-forwarded master to FETCH_HEAD.
+# Applying autostash resulted in conflicts.
+# Your changes are safe in the stash.
+# You can run "git stash pop" or "git stash drop" at any time.
