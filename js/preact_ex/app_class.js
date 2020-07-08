@@ -6,7 +6,7 @@ import { h, Component, render } from 'https://unpkg.com/preact@latest?module';
 import htm from "https://unpkg.com/htm@latest/dist/htm.module.js?module";
 export const html = htm.bind(h);
 
-import { Counter } from './app_hooks.js'
+import { Counter, ToDo } from './app_hooks.js'
 
 class App_class extends Component {
     constructor () {
@@ -76,12 +76,20 @@ class App_class extends Component {
       `
       }
 }
-class App_hook extends Component {
+class Count_hook extends Component {
   render (props, state) {
     let countx = Counter(3);
     return countx;
   }  
 }  
 
+class Todo_hook extends Component {
+  render (props, state) {
+    return ToDo(); //html`${ToDo()}`;
+  }  
+}  
+
 render(html`<${App_class}/>`, document.getElementById('app'));
-render(html`<${App_hook}/>`, document.getElementById('app_hook'));
+render(html`<${Count_hook}/>`, document.getElementById('app_hook'));
+render(html`<${Todo_hook}/>`, //ToDo(), //
+       document.getElementById('todo_hook'));
