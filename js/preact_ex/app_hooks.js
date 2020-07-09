@@ -2,6 +2,8 @@
 import { useState } from 'https://unpkg.com/preact@latest/hooks/dist/hooks.module.js?module'; //useRef, useCallback, useEffect
 import { html } from './app_class.js';
 
+export const hState = useState;
+
 function useCounter(initx=0) {
     const [count, setCount] = useState(initx);
     const increment = () => { //useCallback(() => {

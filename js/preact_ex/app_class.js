@@ -6,7 +6,8 @@ import { h, Component, render } from 'https://unpkg.com/preact@latest?module';
 import htm from "https://unpkg.com/htm@latest/dist/htm.module.js?module";
 export const html = htm.bind(h);
 
-import { Counter, ToDo } from './app_hooks.js'
+import { Counter, ToDo } from './app_hooks.js';
+import { WeatherApp } from './weather.js';
 
 class App_class extends Component {
     constructor () {
@@ -89,7 +90,14 @@ class Todo_hook extends Component {
   }  
 }  
 
+class weatherCard extends Component {
+  render (props, state) {
+    return WeatherApp();
+  }  
+}  
+
 render(html`<${App_class}/>`, document.getElementById('app'));
 render(html`<${Count_hook}/>`, document.getElementById('app_hook'));
 render(html`<${Todo_hook}/>`, //ToDo(), //
        document.getElementById('todo_hook'));
+render(html`<${weatherCard}/>`, document.getElementById('weather_blk'));
