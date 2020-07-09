@@ -29,9 +29,14 @@ export const WeatherApp = () => {
   });
 
   useEffect(() => {
-    console.log("Fetch current weather...")
-    fetchCurrentWeather();
-    fetchWeatherForecast(); //code from ithelp: https://ithelp.ithome.com.tw/articles/10224650
+    //console.log("Fetch current weather...")
+    const fetchData = async () => { //ithelp code: https://ithelp.ithome.com.tw/articles/10225102
+      const data = await Promise.all([
+        fetchCurrentWeather(),
+        fetchWeatherForecast() //code from ithelp: https://ithelp.ithome.com.tw/articles/10224650
+      ]);
+    };
+    fetchData();
   }, []);
 
   const fetchCurrentWeather = () => {
