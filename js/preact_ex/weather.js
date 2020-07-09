@@ -1,6 +1,6 @@
 //modify code (remove '@emotion/styled') from https://codesandbox.io/s/weather-app-with-emotion-fetch-data-with-click-xb3pp
 //import { hState } from './app_hooks.js';
-import { useState, useEffect, useCallback } from 'https://unpkg.com/preact@latest/hooks/dist/hooks.module.js?module'; //useRef
+import { useState, useEffect, useCallback, useMemo } from 'https://unpkg.com/preact@latest/hooks/dist/hooks.module.js?module'; //useRef
 import { html } from './app_class.js';
 /* //the following cannot create custom HTML Tags, may need preact-custom-element 
 const Container = (props) => { return html`<div class="weatherContainer"></div>`; };
@@ -23,10 +23,25 @@ export const WeatherApp = () => {
     temperature: 0,
     windSpeed: 0,
     description: '',
-    //weatherCode: 0,
+    weatherCode: 1,
     rainPossibility: 0,
     comfortability: '',
+    isLoading: true
   });
+
+  const {
+    observationTime,
+    locationName,
+    humid,
+    temperature,
+    windSpeed,
+    description,
+    weatherCode,
+    rainPossibility,
+    comfortability,
+    isLoading,
+  } = weatherElement;
+
   //ithelp code: https://ithelp.ithome.com.tw/articles/10225504
   const fetchData = useCallback(() => {
     const fetchingData = async () => { //ithelp code: https://ithelp.ithome.com.tw/articles/10225102
@@ -37,9 +52,16 @@ export const WeatherApp = () => {
 
       await setWeatherElement({
         ...currentWeather,
-        ...weatherForecast
+        ...weatherForecast,
+        isLoading: false
       });
     };
+
+    setWeatherElement((prevState) => ({ //ithelp code: https://ithelp.ithome.com.tw/articles/10226579
+        ...prevState,
+        isLoading: true
+    }));
+
     fetchingData();
   }, []); // callback with dependency [] is like useMemo hook
 
@@ -96,49 +118,128 @@ export const WeatherApp = () => {
         setWeatherElement(prevState => ({
           ...prevState,
           description: weatherElements.Wx.parameterName,
-          //weatherCode: weatherElements.Wx.parameterValue,
+          weatherCode: weatherElements.Wx.parameterValue,
           rainPossibility: weatherElements.PoP.parameterName,
           comfortability: weatherElements.CI.parameterName,
         }));
       });
   };
 
+// Handle WeatherIcon, code from ithelp https://ithelp.ithome.com.tw/articles/10225927
+  const weatherTypes = {
+    isThunderstorm: [15, 16, 17, 18, 21, 22, 33, 34, 35, 36, 41],
+    isClear: [1],
+    isCloudyFog: [25, 26, 27, 28],
+    isCloudy: [2, 3, 4, 5, 6, 7],
+    isFog: [24],
+    isPartiallyClearWithRain: [8, 9, 10, 11, 12, 13, 14, 19, 20, 29, 30, 31, 32, 38, 39],
+    isSnowing: [23, 37, 42],
+  };
+  
+  const weatherIcons = {
+    day: {
+      isThunderstorm: './svg/day-thunderstorm.svg',
+      isClear: './svg/day-clear.svg',
+      isCloudyFog: './svg/day-cloudy-fog.svg',
+      isCloudy: './svg/day-cloudy.svg',
+      isFog: './svg/day-fog.svg',
+      isPartiallyClearWithRain: './svg/day-partially-clear-with-rain.svg',
+      isSnowing: './svg/day-snowing.svg',
+    },
+    night: {
+      isThunderstorm: './svg/night-thunderstorm.svg',
+      isClear: './svg/night-clear.svg',
+      isCloudyFog: './svg/night-cloudy-fog.svg',
+      isCloudy: './svg/night-cloudy.svg',
+      isFog: './svg/night-fog.svg',
+      isPartiallyClearWithRain: './svg/night-partially-clear-with-rain.svg',
+      isSnowing: './svg/night-snowing.svg',
+    },
+  };
+
+  //use correct sunrise time can refer: https://ithelp.ithome.com.tw/articles/10225946 (but need update)
+  const getMoment = (currTime) => {
+    if (!currTime) return ('day');
+    let month = parseInt(currTime.getMonth());
+    let sunRise= month<9 && month>=6? "05:30": month<=10 && month>=3? "06:00": "06:30"   
+    let sunSet = month<9 && month>=6? "18:30": month<=10 && month>=3? "18:00": "17:30"   
+    const momentx = (minsec) => {
+      let ms = minsec.split(":"); 
+      return new Date(currTime.getFullYear(), currTime.getMonth(), currTime.getDate(), 
+                      parseInt(ms[0]), parseInt(ms[1]), 0, 0);  
+    }
+    return momentx(sunRise) <= currTime && currTime <= momentx(sunSet)? "day": "night"
+  }
+
+  const moment = useMemo(() => getMoment(observationTime), [
+    observationTime,
+  ]);
+
+  const weatherCode2Type = weatherCode =>
+    Object.entries(weatherTypes).reduce(
+      (currentWeatherType, [weatherType, weatherCodes]) =>
+        weatherCodes.includes(Number(weatherCode))? weatherType: currentWeatherType,
+      '',
+    );
+  
+  const WeatherIcon = (currentWeatherCode, moment) => {
+    const [currentWeatherIcon, setCurrentWeatherIcon] = useState('isClear');
+  
+    const theWeatherIcon = useMemo(() => weatherCode2Type(currentWeatherCode), [
+      currentWeatherCode,
+    ]);
+  
+    useEffect(() => {
+      setCurrentWeatherIcon(theWeatherIcon);
+    }, [theWeatherIcon]);
+  
+    return weatherIcons[moment || 'day'][currentWeatherIcon]
+  };
+/* Not work
+  const loadingIcon = (isLoading) => {
+    if (!isLoading) return html`<object type="image/svg+xml" data="./svg/redo.svg" class="svglogo"></object>`;
+    return html`<object type="image/svg+xml" data="./svg/loading.svg" class="svglogo"></object>`;
+  }
+*/  
   return html`
     <div class="weatherContainer">
+      ${console.log('render, isLoading: ', isLoading)}
+
       <div class="weatherCard">
-        <div class="weatherLoc">${weatherElement.locationName}</div>
+        <div class="weatherLoc">${locationName}</div>
         <div class="weatherDesc">
-          <span>${weatherElement.description}</span><span>${weatherElement.comfortability}</span>
+          <span>${description}</span><span>${comfortability}</span>
         </div>
         <div class="currWeather">
           <div class="weatherTemp">
-            ${Math.round(weatherElement.temperature)} <div class="Celsius">°C</div>
+            ${Math.round(temperature)} <div class="Celsius">°C</div>
           </div>
-          <div><object type="image/svg+xml" data="./svg/cloudy.svg" class="Cloudy"></object></div>
+          <div class=".iconContainer">
+              <object type="image/svg+xml" data=${WeatherIcon(weatherCode, moment)} class="svglogo"></object>
+          </div>
         </div>
         <div class="AirFlow">
           <!--"AirFlowIcon"-->
           <object type="image/svg+xml" data="./svg/airFlow.svg" class="svglogo"></object>
-          ${weatherElement.windSpeed} m/h
+          ${windSpeed} m/h
         </div>
         <div class="Rain">
           <!--RainIcon /-->
           <object type="image/svg+xml" data="./svg/humid.svg" class="svglogo"></object>
-          ${Math.round(weatherElement.humid * 100)} % 
+          ${Math.round(humid * 100)} % 
         </div>
         <div class="Rain">
           <object type="image/svg+xml" data="./svg/rain.svg" class="svglogo"></object>
-          ${Math.round(weatherElement.rainPossibility)} %
+          ${Math.round(rainPossibility)} %
         </div>
 
-        <div class="Redo" onClick=${fetchData}>
-        <object type="image/svg+xml" data="./svg/redo.svg" class="svglogo"></object>
-          最後觀測時間：
+        <div class="Redo" onClick=${fetchData} isLoading=${isLoading}>
+          <object type="image/svg+xml" data="./svg/redo.svg" class="svglogo"></object>          <span> </span>最後觀測時間：
           ${new Intl.DateTimeFormat('zh-TW', {
             year: 'numeric', month: 'numeric', day: 'numeric',  
             hour: 'numeric',
             minute: 'numeric',
-          }).format(weatherElement.observationTime)}
+          }).format(observationTime)}
         </div>
       </div>
     </div>

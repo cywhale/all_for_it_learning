@@ -45,9 +45,12 @@
   font-weight: normal;
   font-size: 42px;
 }
-/* CloudyIcon */
-.Cloudy {
+
+.iconContainer {
   flex-basis: 30%;
+}
+.iconContainer .svglogo {
+  max-height: 110px;
 }
 
 .AirFlow {
@@ -92,4 +95,21 @@
   width: 15px;
   height: 15px;
   cursor: pointer;
+}
+.Redo[isLoading=true] > .svglogo {
+  animation: rotate infinite 2s linear;
+  animation-duration: 2s
+}
+.Redo[isLoading=false] > .svglogo {
+  animation: rotate infinite 0s linear;
+  animation-duration: 0s
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
 }

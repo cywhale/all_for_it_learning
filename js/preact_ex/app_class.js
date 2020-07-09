@@ -91,6 +91,15 @@ class Todo_hook extends Component {
 }  
 
 class weatherCard extends Component {
+  componentDidMount () {
+    let redox = this.base.querySelector('.Redo');
+    console.log('After render: ' + redox.getAttribute('isLoading'));
+  }
+  getSnapshotBeforeUpdate() {
+    let redox = this.base.querySelector('.Redo');
+  //redox.setAttribute('isLoading', isLoading);
+    console.log('Before render: ' + redox.getAttribute('isLoading'));
+  }
   render (props, state) {
     return WeatherApp();
   }  
