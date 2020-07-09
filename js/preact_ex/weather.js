@@ -1,6 +1,6 @@
 //modify code (remove '@emotion/styled') from https://codesandbox.io/s/weather-app-with-emotion-fetch-data-with-click-xb3pp
 //import { hState } from './app_hooks.js';
-import { useState, useEffect } from 'https://unpkg.com/preact@latest/hooks/dist/hooks.module.js?module'; //useRef, useCallback
+import { useState, useEffect, useCallback } from 'https://unpkg.com/preact@latest/hooks/dist/hooks.module.js?module'; //useRef
 import { html } from './app_class.js';
 /* //the following cannot create custom HTML Tags, may need preact-custom-element 
 const Container = (props) => { return html`<div class="weatherContainer"></div>`; };
@@ -23,21 +23,30 @@ export const WeatherApp = () => {
     temperature: 0,
     windSpeed: 0,
     description: '',
-    weatherCode: 0,
+    //weatherCode: 0,
     rainPossibility: 0,
     comfortability: '',
   });
-
-  useEffect(() => {
-    //console.log("Fetch current weather...")
-    const fetchData = async () => { //ithelp code: https://ithelp.ithome.com.tw/articles/10225102
-      const data = await Promise.all([
+  //ithelp code: https://ithelp.ithome.com.tw/articles/10225504
+  const fetchData = useCallback(() => {
+    const fetchingData = async () => { //ithelp code: https://ithelp.ithome.com.tw/articles/10225102
+      const [currentWeather, weatherForecast] = await Promise.all([
         fetchCurrentWeather(),
         fetchWeatherForecast() //code from ithelp: https://ithelp.ithome.com.tw/articles/10224650
       ]);
+
+      await setWeatherElement({
+        ...currentWeather,
+        ...weatherForecast
+      });
     };
-    fetchData();
-  }, []);
+    fetchingData();
+  }, []); // callback with dependency [] is like useMemo hook
+
+  useEffect(() => {
+    //console.log("Fetch current weather...")
+    fetchData(); //function cause dependency unequal then repeated render, so put within callback
+  }, [fetchData]);
 
   const fetchCurrentWeather = () => {
     fetch(
@@ -57,7 +66,7 @@ export const WeatherApp = () => {
 
         setWeatherElement(prevState => ({
           ...prevState,
-          observationTime: locationData.time.obsTime,
+          observationTime: new Date(locationData.time.obsTime),
           locationName: locationData.locationName,
           //description: weatherElements.H_Weather,
           temperature: weatherElements.TEMP,
@@ -87,7 +96,7 @@ export const WeatherApp = () => {
         setWeatherElement(prevState => ({
           ...prevState,
           description: weatherElements.Wx.parameterName,
-          weatherCode: weatherElements.Wx.parameterValue,
+          //weatherCode: weatherElements.Wx.parameterValue,
           rainPossibility: weatherElements.PoP.parameterName,
           comfortability: weatherElements.CI.parameterName,
         }));
@@ -122,14 +131,14 @@ export const WeatherApp = () => {
           ${Math.round(weatherElement.rainPossibility)} %
         </div>
 
-        <div class="Redo" onClick=${() => { fetchCurrentWeather(); fetchWeatherForecast(); }}>
+        <div class="Redo" onClick=${fetchData}>
         <object type="image/svg+xml" data="./svg/redo.svg" class="svglogo"></object>
           最後觀測時間：
           ${new Intl.DateTimeFormat('zh-TW', {
             year: 'numeric', month: 'numeric', day: 'numeric',  
             hour: 'numeric',
             minute: 'numeric',
-          }).format(new Date(weatherElement.observationTime))}        
+          }).format(weatherElement.observationTime)}
         </div>
       </div>
     </div>
