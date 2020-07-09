@@ -16,18 +16,22 @@ const Rain = (props) => { return html` <div class="Rain"></div>`; };
 const Redo = (props) => { return html` <div class="Redo"></div>`; };
 */
 export const WeatherApp = () => {
-  const [currentWeather, setCurrentWeather] = useState({ //hState
+  const [weatherElement, setWeatherElement] = useState({ //hState
     observationTime: new Date(),
-    locationName: '臺北',
+    locationName: '',
+    humid: 0,
+    temperature: 0,
+    windSpeed: 0,
     description: '',
-    temperature: '',
-    windSpeed: '',
-    humid: '',
+    weatherCode: 0,
+    rainPossibility: 0,
+    comfortability: '',
   });
 
   useEffect(() => {
     console.log("Fetch current weather...")
     fetchCurrentWeather();
+    fetchWeatherForecast(); //code from ithelp: https://ithelp.ithome.com.tw/articles/10224650
   }, []);
 
   const fetchCurrentWeather = () => {
@@ -39,49 +43,88 @@ export const WeatherApp = () => {
         const locationData = data.records.location[0];
         const weatherElements = locationData.weatherElement.reduce(
           (neededElements, item) => {
-            if (['WDSD', 'TEMP', 'HUMD', 'H_Weather'].includes(item.elementName)) {
+            if (['WDSD', 'TEMP', 'HUMD'].includes(item.elementName)) { //, 'H_Weather'
               neededElements[item.elementName] = item.elementValue;
             }
             return neededElements;
           }, {},
         );
 
-        setCurrentWeather({
+        setWeatherElement(prevState => ({
+          ...prevState,
           observationTime: locationData.time.obsTime,
           locationName: locationData.locationName,
-          description: weatherElements.H_Weather,
+          //description: weatherElements.H_Weather,
           temperature: weatherElements.TEMP,
           windSpeed: weatherElements.WDSD,
           humid: weatherElements.HUMD,
-        });
+        }));
+      });
+  };
+
+  const fetchWeatherForecast = () => {
+    fetch(
+      'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-507B37E0-0383-4D8C-878D-628B54EC3536&locationName=臺北市',
+    )
+      .then(response => response.json())
+      .then(data => {
+        const locationData = data.records.location[0];
+        const weatherElements = locationData.weatherElement.reduce(
+          (neededElements, item) => {
+            if (['Wx', 'PoP', 'CI'].includes(item.elementName)) {
+              neededElements[item.elementName] = item.time[0].parameter;
+            }
+            return neededElements;
+          },
+          {},
+        );
+
+        setWeatherElement(prevState => ({
+          ...prevState,
+          description: weatherElements.Wx.parameterName,
+          weatherCode: weatherElements.Wx.parameterValue,
+          rainPossibility: weatherElements.PoP.parameterName,
+          comfortability: weatherElements.CI.parameterName,
+        }));
       });
   };
 
   return html`
     <div class="weatherContainer">
       <div class="weatherCard">
-        <div class="weatherLoc">${currentWeather.locationName}</div>
-        <div class="weatherDesc">${currentWeather.description}</div>
+        <div class="weatherLoc">${weatherElement.locationName}</div>
+        <div class="weatherDesc">
+          <span>${weatherElement.description}</span><span>${weatherElement.comfortability}</span>
+        </div>
         <div class="currWeather">
           <div class="weatherTemp">
-            ${Math.round(currentWeather.temperature)} <div class="Celsius">°C</div>
+            ${Math.round(weatherElement.temperature)} <div class="Celsius">°C</div>
           </div>
-          <div class="Cloudy"><!--CloudyIcon /--></div>
+          <div><object type="image/svg+xml" data="./svg/cloudy.svg" class="Cloudy"></object></div>
         </div>
         <div class="AirFlow">
-          <div class="AirFlowIcon">${currentWeather.windSpeed} m/h</div>
+          <!--"AirFlowIcon"-->
+          <object type="image/svg+xml" data="./svg/airFlow.svg" class="svglogo"></object>
+          ${weatherElement.windSpeed} m/h
         </div>
         <div class="Rain">
           <!--RainIcon /-->
-          ${Math.round(currentWeather.humid * 100)} %
+          <object type="image/svg+xml" data="./svg/humid.svg" class="svglogo"></object>
+          ${Math.round(weatherElement.humid * 100)} % 
+        </div>
+        <div class="Rain">
+          <object type="image/svg+xml" data="./svg/rain.svg" class="svglogo"></object>
+          ${Math.round(weatherElement.rainPossibility)} %
         </div>
 
-        <div class="Redo" onClick=${fetchCurrentWeather}>
+        <div class="Redo" onClick=${() => { fetchCurrentWeather(); fetchWeatherForecast(); }}>
+        <object type="image/svg+xml" data="./svg/redo.svg" class="svglogo"></object>
           最後觀測時間：
           ${new Intl.DateTimeFormat('zh-TW', {
+            year: 'numeric', month: 'numeric', day: 'numeric',  
             hour: 'numeric',
             minute: 'numeric',
-          }).format(new Date(currentWeather.observationTime))}        
+          }).format(new Date(weatherElement.observationTime))}        
         </div>
       </div>
     </div>
