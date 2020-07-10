@@ -1,4 +1,4 @@
-# weather
+# preact_ex (temporarily trials in preactjs)
 
 ## CLI Commands
 
