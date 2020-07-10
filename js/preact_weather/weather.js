@@ -2,6 +2,9 @@
 //import { hState } from './app_hooks.js';
 import { useState, useEffect, useCallback, useMemo } from 'https://unpkg.com/preact@latest/hooks/dist/hooks.module.js?module'; //useRef
 import { html } from './app_class.js';
+//import { useState, useEffect, useCallback, useMemo } from 'preact/hooks'
+//import { html } from 'htm/preact';
+
 /* //the following cannot create custom HTML Tags, may need preact-custom-element 
 const Container = (props) => { return html`<div class="weatherContainer"></div>`; };
 const WeatherCard = (props) => { return html` <div class="weatherCard"></div>`; };

@@ -5,6 +5,8 @@
 import { h, Component, render } from 'https://unpkg.com/preact@latest?module';
 import htm from "https://unpkg.com/htm@latest/dist/htm.module.js?module";
 export const html = htm.bind(h);
+// import { h, render } from 'preact'; 
+// import { html, Component } from 'htm/preact';
 
 import { Counter, ToDo } from './app_hooks.js';
 import { WeatherApp } from './weather.js';

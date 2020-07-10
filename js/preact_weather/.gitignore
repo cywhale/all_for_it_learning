@@ -1,0 +1,22 @@
+#ignore node_modules
+node_modules
+**/map/
+webgl
+pub
+ver_bak
+coverage
+data
+temp
+tmp
+nohup.out
+.vscode
+*.save
+*.bak
+*.swp
+*~
+.DS_Store
+.credentials.*
+.eslintrc.*
+**/*.pem
+**/*.key
+**/*.cert
