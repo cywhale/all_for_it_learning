@@ -28,6 +28,7 @@
     "sirv-cli": "^0.4.5"
   },
   "dependencies": {
+    "firebase": "^7.16.0",
     "preact": "^10.3.2",
     "preact-render-to-string": "^5.1.4",
     "preact-router": "^3.2.1"
