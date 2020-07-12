@@ -1,6 +1,6 @@
 {
-  "name": "weather",
-  "short_name": "weather",
+  "name": "pwa_firebase",
+  "short_name": "pwa_firebase",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

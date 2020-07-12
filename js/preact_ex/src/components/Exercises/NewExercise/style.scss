@@ -1,0 +1,26 @@
+@import '../../../style/variables';
+
+h2 {
+  color: $c-text-light;
+  font-weight: normal;
+  margin-top: 32px;
+}
+
+.fieldset {
+  margin-top: 16px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.split {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+
+  .fieldset {
+    margin-top: 0;
+    width: 45%;
+  }
+}

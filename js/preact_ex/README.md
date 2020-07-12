@@ -1,4 +1,5 @@
 # preact_ex (temporarily trials in preactjs)
+# codes from https://github.com/dandenney/building-a-small-pwa-with-preact-and-firebase
 
 ## CLI Commands
 
