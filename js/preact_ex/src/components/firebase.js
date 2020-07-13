@@ -1,10 +1,9 @@
 import * as firebase from "firebase/app";
 //import 'firebase/database';
 import 'firebase/auth';
+const { firebaseConfig } = require('../../.credentials.development.js')
 
-const credentials = import("../../.credentials.development.js");
-
-firebase.initializeApp(credentials);
+firebase.initializeApp(firebaseConfig);
 
 export default firebase;
 
