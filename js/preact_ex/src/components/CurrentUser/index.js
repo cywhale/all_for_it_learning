@@ -10,10 +10,11 @@ export default class CurrentUser extends Component {
   render() {
     const user = this.props.user;
     return (<article class={style.currentUser}>
-    	    <img alt={user.displayName}
-		     class={style.avatar}
-		     src={user.photoURL}
-		     width="40"	/>
+         <img alt={user.displayName} 
+         referrerpolicy="no-referrer" 
+		     class={style.avatar} 
+		     src={user.photoURL} 
+		     width="60"	/>
 	    <button class={style.button} onClick={() => auth.signOut()}>Sign Out</button>
 	    </article>
     );

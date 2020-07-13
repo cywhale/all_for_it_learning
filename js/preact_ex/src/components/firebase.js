@@ -1,3 +1,4 @@
+//import firebase from "https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js";
 import * as firebase from "firebase/app";
 //import 'firebase/database';
 import 'firebase/auth';
