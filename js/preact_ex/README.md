@@ -1,6 +1,8 @@
 # preact_ex (temporarily trials in preactjs)
 
-#### codes from https://github.com/dandenney/building-a-small-pwa-with-preact-and-firebase
+#### codes modified from https://github.com/dandenney/building-a-small-pwa-with-preact-and-firebase
+
+#### Not solve: build firebase error and sometimes network error (but then ok) when serve (firebase/auth)
 
 ## CLI Commands
 

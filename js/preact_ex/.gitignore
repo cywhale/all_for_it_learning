@@ -1,5 +1,7 @@
 node_modules
+build
 **/map/
+**/build/
 webgl
 pub
 ver_bak
@@ -20,3 +22,7 @@ nohup.out
 **/*.key
 **/*.cert
 **/*.credentials.*
+**/.gitignore
+**/.firebaserc
+**/size-plugin.json
+
