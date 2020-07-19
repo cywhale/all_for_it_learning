@@ -2,6 +2,7 @@ import { Viewer } from 'cesium';
 import React, { Component } from 'react';
 import './Earth.css'
 const widgets_style = require('../node_modules/cesium/Build/Cesium/Widgets/widgets.css');
+//const widgets_style = require('Widgets/widgets.css');
 
 class Earth extends Component {
   state = {viewerLoaded : false}
