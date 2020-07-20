@@ -61,3 +61,27 @@ git rebase --autostash FETCH_HEAD
 # Applying autostash resulted in conflicts.
 # Your changes are safe in the stash.
 # You can run "git stash pop" or "git stash drop" at any time.
+
+# Sometimes file got unmerged make git rebase --autostash fail such as 
+# xxfile: needs merge
+# xxfile: unmerged (72902cbc64e51cda676da55130ca3e5c79951e59)
+# xxfile: unmerged (c1087b840ada55f0ff6fa896bcc502043a71fc8b)
+# Cannot save the current index state
+git status
+# follow git suggestion, to handle each unmerged file, and then save your stash handle
+git stash save "temp1"
+# Saved working directory and index state On master: temp1
+git stash list
+# stash@{0}: On master: temp1
+# stash@{1}: autostash
+git pull
+# .................................... 
+# Already up to date.
+git stash pop stash@{0}
+# On branch master
+# Your branch is up to date with 'origin/master'.
+git rebase --autostash FETCH_HEAD
+# Created autostash: 6eeb93f
+# Current branch master is up to date.
+# Applied autostash................... Done
+
