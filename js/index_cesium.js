@@ -111,7 +111,7 @@ const sTileImg = layers.addImageryProvider(
         rectangle: Cesium.Rectangle.fromDegrees(-180.0, -90.0, 180.0, 90.0),
         //numberOfLevelZeroTilesX: 1,
         //numberOfLevelZeroTilesY: 1,
-        alpha: 0.5,
+        //alpha: 0.5,
     //  parameters: {transparent : 'true',
     //               format : 'image/png'
     //              },            
@@ -121,7 +121,7 @@ const sTileImg = layers.addImageryProvider(
   
 //sTileImg.colorToAlpha = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
 //sTileImg.colorToAlphaThreshold = 0.1;
-//sTileImg.alpha = 0.5 
+sTileImg.alpha = 0.5 
 const wsurl = 'https://ecodata.odb.ntu.edu.tw/pub/icon/windpower_blue01s.png';
 const siteurl = 'https://odbwms.oc.ntu.edu.tw/odbintl/rasters/getcplan/?name=bio_r0043'
 const sitecrs = 'EPSG:4326' 
@@ -199,7 +199,6 @@ dataSourcePromise.then(function (dataSource) {
               cluster.billboard.image = pin20;
             } else if (clusteredEntities.length >= 10) {
               cluster.billboard.image = pin10;
-              //cluster.billboard.color = Cesium.Color.fromHsl(0, 0, 0, 0.6);
             } else {
               cluster.billboard.image =
                 singleDigitPins[clusteredEntities.length - 2];
@@ -217,14 +216,14 @@ dataSourcePromise.then(function (dataSource) {
     // start with custom style
     customStyle();
   
-    var viewModel = {
+    const viewModel = {
       pixelRange: pixelRange,
       minimumClusterSize: minimumClusterSize,
       threshold: sTileImg.alpha, //colorToAlphaThreshold,
     };
     Cesium.knockout.track(viewModel);
   
-    var toolbar = document.getElementById("toolbar");
+    const toolbar = document.getElementById("toolbar");
     Cesium.knockout.applyBindings(viewModel, toolbar);
   
     function subscribeParameter(name) {
@@ -247,9 +246,9 @@ dataSourcePromise.then(function (dataSource) {
       );
     }); 
   
-    viewer.flyTo(dataSource)
+    viewer.flyTo(dataSource, {
+        offset: new Cesium.HeadingPitchRange(0, (-Math.PI / 2)+0.0000001, 8000000) //-Cesium.Math.PI_OVER_FOUR, 20000000)
+    })
     //viewer.zoomTo(dataSource);
     //viewer.dataSources.remove(dataSource);
 });
-
-      
