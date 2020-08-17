@@ -1,7 +1,7 @@
 # Solve fdisk /dev/sda error: "All space for primary partitions is in use. Adding logical partition 6 No free sectors available."
 # ref: https://www.rootusers.com/how-to-increase-the-size-of-a-linux-lvm-by-expanding-the-virtual-machine-disk/
 fdisk -l ## to check current partition and make cure new partition number, see ref URL (may need sudo) 
-fdisk /dev/sda ## enter prompt
+# fdisk /dev/sda ## enter prompt
 # n ## add new partition
 ###### then follow ref URL steps, works for Centos 6.5. BUT encounter problems in Ubuntu 16.04
 ###### Error: "All space for primary partitions is in use. Adding logical partition 6 No free sectors available."
