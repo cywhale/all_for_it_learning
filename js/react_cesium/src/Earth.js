@@ -1,9 +1,12 @@
 import { Viewer } from 'cesium';
+//import Ion from "../node_modules/cesium/Source/Core/Ion";
 import React, { Component } from 'react';
+import MultiSelectSort from './MultiSelectSort';
 import './Earth.css'
-const widgets_style = require('../node_modules/cesium/Build/Cesium/Widgets/widgets.css');
+import '../node_modules/cesium/Build/Cesium/Widgets/widgets.css';
 //const widgets_style = require('Widgets/widgets.css');
 
+//Ion.defaultAccessToken='';
 class Earth extends Component {
   state = {viewerLoaded : false}
 
@@ -53,7 +56,9 @@ class Earth extends Component {
           ref={ element => this.cesiumContainer = element }
           className="fullSize">
         </div>
-        <div id="toolbar" className="toolbar"></div>
+        <div id="toolbar" className="toolbar">
+           <MultiSelectSort />
+        </div>
         </div>
       );
   }
