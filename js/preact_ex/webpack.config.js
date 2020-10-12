@@ -9,8 +9,11 @@ module.exports = {
       path: __dirname + '/dist'
     },
     resolve: {
+        extensions: ['.js', '.jsx'],
         alias: {
-           'firebaseImport$': path.join('src', 'components', 'firebaseImport.browser.js')
+           'firebaseImport$': path.join('src', 'components', 'firebaseImport.browser.js'),
+           "react": "preact/compat",
+           "react-dom": "preact/compat"
         }
     },
     module: {
@@ -40,13 +43,5 @@ module.exports = {
             ]
           },
       ]
-    },
-    resolve: {
-      extensions: ['.js', '.jsx'],
-      alias: {
-        "react": "preact/compat",
-        "react-dom": "preact/compat"
-      }
-
     }
   };
