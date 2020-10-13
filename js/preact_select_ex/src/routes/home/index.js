@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import style from './style.css';
-import MultiSelectSort from '../../components/MultiSelectSort';
+import MultiSelectSort from 'async!../../components/MultiSelectSort';
 
 
 const Home = () => (
