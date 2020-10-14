@@ -7,11 +7,11 @@
       {
         "label": "iWay",
         "children": [
-          { "label": "Universidad de Especialidades del Espíritu Santo", "value": "universidad-de-especialidades-del-espíritu-santo" },
-          { "label": "Marmara University", "value": "marmara-university" },
-          { "label": "Baghdad College of Pharmacy", "value": "baghdad-college-of-pharmacy" }
+          { "label": "Universidad de Especialidades del Espíritu Santo", "value": "universidad-de-especialidades-del-espíritu-santo", "url": "test1" },
+          { "label": "Marmara University", "value": "marmara-university", "url": "test2" },
+          { "label": "Baghdad College of Pharmacy", "value": "baghdad-college-of-pharmacy", "url": "test3" }
         ],
-        "value": "iway"
+        "value": "iway", "url": "test4"
       },
       {
         "label": "KDB",

@@ -6,8 +6,32 @@ import DropdownTreeSelect from 'react-dropdown-tree-select';
 import 'react-dropdown-tree-select/dist/styles.css'
 import data from './data.json';
 
+const rdata = [...data];
+
 const onChange = (curNode, selectedNodes) => {
   console.log('onChange::', curNode, selectedNodes)
+  let valx = [];
+  selectedNodes.map((item) => {
+    if (item.hasOwnProperty('_children')) {
+      item._children.map((child) => {
+        let nodex = child.substring(6).split("-").reduce(
+          (prev, curr) => {
+            let leaf = prev[parseInt(curr)];
+            if (leaf.hasOwnProperty('children')) {
+              return leaf.children;  
+            } else {
+            return leaf.value;
+            }
+          },
+          rdata
+        ); //rdts1-0-0-0
+        valx.push(nodex);
+      });
+    } else {
+      valx.push(item.value);
+    }
+  });
+  console.log('Get leaf value: ', valx);
 }
 const onAction = (node, action) => {
   console.log('onAction::', action, node)
@@ -18,7 +42,7 @@ const onNodeToggle = curNode => {
 
 const MultiSelectSort = () => (
   <div>
-    <DropdownTreeSelect data={data} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} />
+    <DropdownTreeSelect data={data} onChange={onChange} onAction={onAction} onNodeToggle={onNodeToggle} inlineSearchInput={true} />
   </div>
 )
 
