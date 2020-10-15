@@ -25,7 +25,13 @@ const onChange = (curNode, selectedNodes) => {
           },
           rdata
         ); //rdts1-0-0-0
-        valx.push(nodex);
+        if (typeof nodex !== 'string' && nodex.length>1) {
+          nodex.map((item) => {
+            valx.push(item.value);
+          });
+        } else {
+          valx.push(nodex);
+        }
       });
     } else {
       valx.push(item.value);
