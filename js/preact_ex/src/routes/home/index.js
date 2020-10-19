@@ -1,6 +1,6 @@
 //import { createRef } from 'preact'; // h, Component, render
 import UserHandler from '../../components/UserHandler';
-import LayerModal from '../../components/LayerModal';
+import UserCookies from '../../components/UserCookies';
 //import SortableSelect from '../../components/LayerModal/SortableSelect';
 import style from './style';
 
@@ -11,7 +11,7 @@ const Home = () => {
     return (
       <div class={style.home}>
         <UserHandler />
-        <LayerModal />
+        <UserCookies />
       </div>
     );
 //}
