@@ -1,0 +1,6 @@
+.cookiediv {
+  display: block;
+}
+.cookiediv.shown {
+  display: none;
+}
