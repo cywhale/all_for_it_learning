@@ -15,7 +15,7 @@ const UserCookies = () => {
   const cookieOpts = {
     path: "/",
     expires: new Date(2020, 10, 20, 14, 20, 0, 30),
-    secure: true
+    //secure: true
   };
   const ucodelen = 32;
   const [ucode, setUcode] = useState({
@@ -24,18 +24,6 @@ const UserCookies = () => {
   });
   const cookieRef = useRef(null);
 
-/*
-  const getCookie = (key) => {
-    let cookie;
-    if (arguments.length === 0) {
-      cookie = cookies.getAll();
-    } else {
-      cookie = cookies.get(key);
-    }
-    console.log('getcookies:', cookie); //document.cookie)
-    return (cookie || '').split(';');
-  };
-*/
   const setCookie = (c) => {
     //console.log('setcookies before:', cookies); //document.cookie);
     let cookie = c.split('=');//document.cookie;
@@ -45,16 +33,9 @@ const UserCookies = () => {
   };
 
   const CookiePopup = () => {
-//class CookiePopup extends Component {
-//  constructor() {
-//  super();
-    // set initial time:
     const [popup, setPopup] = useState({
-      //this.state.closed = false;
-      details: false //this.state.details = false;
+      details: false
     });
-//  componentDidMount() {// update time every second }
-//  componentWillUnmount() {// stop when not renderable }
 
     const clickClose = () => {
       //console.log('click close');
@@ -97,22 +78,11 @@ const UserCookies = () => {
   const initCookies = ()  => {
     if (!checkCookies()) {
       setShown(false);
-      //let d = document.createElement('div')
-      //d.id = 'useCookies';
-      //document.body.appendChild(d);
       setRoot(render(<CookiePopup />, cookieRef.current)); //document.getElementById('useCookies')));
-      //setCookie('sylogentpolicyseen=true');
     }
   };
 
   const fetchingUcode = (leng=32) => nanoid(leng);
-  /*{ fetch('/api/genucode/', {mode: "cors"}
-      ).then(response => response.json()
-      ).then(data => {
-        cookies.set(data);
-        setUcode(getCookie('ucode'));
-      });
-  };*/
 
   const setWithUcode = useCallback(() => {
     const checkUcode = () => {
