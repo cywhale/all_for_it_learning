@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "preact_select_ex",
+  "name": "preact_client",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -39,6 +39,7 @@
     "typescript": "^4.0.3"
   },
   "dependencies": {
+    "history": "^5.0.0",
     "nanoid": "^3.1.16",
     "preact": "^10.3.2",
     "preact-render-to-string": "^5.1.4",

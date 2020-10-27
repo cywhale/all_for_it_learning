@@ -1,5 +1,5 @@
 {
-  "name": "preact_ex",
+  "name": "preact_firebase",
   "version": "0.0.1",
   "license": "MIT",
   "main": "./src/index.js",
