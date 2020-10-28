@@ -1,9 +1,9 @@
 //use hooks for https://jsfiddle.net/vittore/nyrmcmcy/2/
 /** @jsx h */
-import { render, Fragment } from 'preact';
-import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
+import { render } from 'preact'; //Fragment
+import { useState, useEffect, useRef } from 'preact/hooks'; //useCallback
 import Cookies from 'universal-cookie';
-import { nanoid } from 'nanoid';
+//import { nanoid } from 'nanoid';
 import "../../style/style_usercookies.css";
 import style from "./style";
 
@@ -17,11 +17,11 @@ const UserCookies = () => {
     expires: new Date(2020, 10, 20, 14, 20, 0, 30),
     //secure: true
   };
-  const ucodelen = 32;
+  /*const ucodelen = 32;
   const [ucode, setUcode] = useState({
     str: '',
     //expired:
-  });
+  }); */
   const cookieRef = useRef(null);
 
   const setCookie = (c) => {
@@ -81,7 +81,7 @@ const UserCookies = () => {
       setRoot(render(<CookiePopup />, cookieRef.current)); //document.getElementById('useCookies')));
     }
   };
-
+/*
   const fetchingUcode = (leng=32) => nanoid(leng);
 
   const setWithUcode = useCallback(() => {
@@ -105,7 +105,7 @@ const UserCookies = () => {
     checkUcode();
     console.log(ucode.str);
   }, [ucode]);
-
+*/
 
   useEffect(() => {
     //if (root === null) {
@@ -119,14 +119,15 @@ const UserCookies = () => {
     showClass=`${style.cookiediv}`
   }
   //console.log("showClass: " + showClass + " when isShown is: " + shown);
-
-  return(
+/*
     <Fragment>
-      <div id='useCookies' class={showClass} isShown={shown} ref={cookieRef} />
       <div>
         <button onClick={() => setWithUcode()}>Sign In</button>
       </div>
     </Fragment>
+*/
+  return(
+      <div id='useCookies' class={showClass} isShown={shown} ref={cookieRef} />
   );
 };
 export default UserCookies;

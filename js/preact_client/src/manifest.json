@@ -1,6 +1,6 @@
 {
-  "name": "preact_select_ex",
-  "short_name": "preact_select_ex",
+  "name": "preact_client",
+  "short_name": "preact_client",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

@@ -2,7 +2,6 @@ import { h } from 'preact';
 import { Router } from 'preact-router';
 import { createMemoryHistory } from 'history'; //createHashHistory
 import Header from './header';
-import Redirect from './Redirect';
 
 // Code-splitting is automated for `routes` directory
 import Home from '../routes/home';
@@ -16,7 +15,6 @@ const App = () => {
 	<Home path="/" />
         <Profile path="/profile/" user="me" />
 	<Profile path="/profile/:user" />
-        <Redirect path="/login" to="http://localhost:3000" />
       </Router>
     </div>
   );
