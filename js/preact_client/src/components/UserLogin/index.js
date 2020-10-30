@@ -2,53 +2,106 @@ import { render } from 'preact';
 import { useState, useEffect, useCallback } from 'preact/hooks';
 import Cookies from 'universal-cookie';
 import { nanoid } from 'nanoid';
-import Redirect from '../Redirect';
+//import { Router, route } from 'preact-router';
+//import { Link } from 'preact-router/match';
+//import { createBrowserHistory } from 'history';
+//import Redirect from '../Redirect';
+import Popup from 'async!../Popup';
+import style from './style';
 const { odbConfig } = require('./.ssologin.js');
 
-const UserLogin = () => {  
+const UserLogin = () => {
   const cookies = new Cookies();
+//const history = createBrowserHistory();
   const cookieOpts = {
     path: "/",
-    expires: new Date(2020, 10, 20, 14, 20, 0, 30),
+    expires: new Date(2020, 10, 30, 20, 20, 0, 30),
     //secure: true
   };
   const ucodelen = 32;
+  const [state, setState] = useState({
+    redirect: '',
+    popup: false
+  });
+  const [user, setUser] = useState({
+    name: '',
+    //group: ''
+  });
   const [ucode, setUcode] = useState({
     str: '',
     //expired:
   });
-  const [user, setUser] = useState(null);
+
+/*const clickPopup = () => {
+    document.getElementById("loginpopup").contentWindow.document.body.onclick = function() {
+        console.log(document.getElementById("loginpopup").contentWindow.location);
+    }
+  }*/
+  const closePopup = () => {
+    //console.log(document.getElementById('loginpopup').contentWindow.window.location.href);
+    OdbAuth(ucode.str);
+    setState((preState) => ({
+      ...preState,
+      popup: false
+    }));
+  }
 
   const checkUcode = () => {
     let uc = cookies.get('ucode', { doNotParse: true });
     console.log('Check ucode availability: ', uc)
     if (uc !== null && uc != undefined) {
-      if (uc && uc !== '' && uc.length === ucodelen) { return (uc); }
+      if (uc && uc !== '' && uc.length === ucodelen) {
+        return (uc);
+      }
     }
     return('');
   };
+
+  const OdbAuth = async (ucstr) => { //useCallback(() => {
+    //const checkOdbAuth = async (ucstr) => {
+      const chkurl =  odbConfig.base + odbConfig.check + "?ucode=" + ucstr;
+      await fetch(chkurl)
+       .then(res => res.json())
+       .then(sso => {
+          if (sso) {
+            if (sso.username && sso.username !== "") {
+              return(
+                setUser((preState) => ({
+                  ...preState,
+                  name: sso.username
+                }))
+              );
+            }
+          }
+          return(
+            setUser((preState) => ({
+              ...preState,
+              name: ''
+            }))
+          );
+        });
+    //};
+    //const uc = ucode.str;
+    //if (uc !== '') {
+    //  checkOdbAuth(uc);
+    //}
+  };//,[]);
 
   const fetchingUcode = (leng=32) => nanoid(leng);
 
   const renderRedirect = useCallback(() => {
     const rurl = odbConfig.base + odbConfig.login;
-
-    let uc = checkUcode();
-    if (uc === '') {
-      uc = fetchingUcode(ucodelen);
-    }
-    cookies.set('ucode', uc, cookieOpts);
-    setUcode((preState) => ({
-      ...preState,
-      str: uc
+    //route(rurl);
+    //window.location.href = rurl;
+    let location = rurl+"?ucode=" + ucode.str;// + "&nurl="+window.location.href; //no need nurl on iframe
+    //history.location; //is an obj with (a.pathname + a.search + a.hash)
+    //history.push(rurl+"?ucode=" + ucode.str + "&nurl="+window.location.href);
+    setState((preState) => ({
+        ...preState,
+        redirect: location,
+        popup: true
     }));
-    console.log(ucode.str);
-
-    return (
-      <Redirect path="/login" to={rurl} />
-    );
-  }, [ucode]);
-
+  }, [ucode.str]);
 
   const OdbSignIn = () => {
     return(
@@ -60,55 +113,68 @@ const UserLogin = () => {
   };
 
   const OdbSignOut = () => {
-    setUser(null);
-    return (
-      <Redirect path="/" to="/" />
-    );
+    cookies.remove('ucode', { path: '/' });
+    setUcode((preState) => ({
+      ...preState,
+      str: '',
+    }));
+    setUser((preState) => ({
+      ...preState,
+      name: '',
+    }));
+    setState((preState) => ({
+      ...preState,
+      redirect: '',
+      popup: false
+    }));
   };
 
   const OdbUser = () => {
-//    const { user } = props;
-/*
-         <img alt={user.displayName} 
-         referrerpolicy="no-referrer" 
-                     class={style.avatar} 
-                     src={user.photoURL} 
-                     width="60" /> */
     return (
       <div style='align-items:center;align-self:stretch;display:flex;justify-content:center;padding-top:16px;'>
-            <h1>Welcome! {user}</h1>
+            <h1>Welcome! {user.name}</h1>
             <button onClick={() => OdbSignOut()}>Sign Out</button>
       </div>
     );
   };
 
-  const OdbAuth = async () => {
-    const chkurl =  odbConfig.base + odbConfig.check + "?ucode=" + ucode;
-    await fetch(chkurl)
-      .then(res => res.json())
-      .then(sso => {
-        if (sso) {
-          if (sso.username && sso.username !== "") {
-            return(setUser(sso.username));
-          }
-        }
-        return(setUser(null));
-      });
-  };
+  const initUcode = () => {
+      let uc = checkUcode();
+      if (uc === '') {
+        uc = fetchingUcode(ucodelen);
+        cookies.set('ucode', uc, cookieOpts);
+      }
+      setUcode((preState) => ({
+          ...preState,
+          str: uc
+      }));
+  }
 
   useEffect(() => {
-    if (checkUcode() !== '') {
-      OdbAuth();
+    if (ucode.str === '') {
+      initUcode();
+    } else {
+      OdbAuth(ucode.str);
     }
-  }, [ucode]);
+  },[ucode.str]);
 
-//export default class UserHandler extends Component {
-  //render() {
   return (
     <section style="display:flex;">
-      {!user && <OdbSignIn />}
-      { user && <div style="display:flex">
-        <OdbUser /></div> }
+      {user.name === '' &&
+        <div>
+        <OdbSignIn />
+        { state.popup && state.redirect !== '' &&
+          <Popup
+            srcurl={state.redirect}
+            text='Click "Close Button" to hide popup'
+            closePopup={ closePopup }
+          />
+        }
+        </div>
+      }
+      { user.name !== '' && <div style="display:flex">
+        <OdbUser /></div>
+      }
    </section>
   );
   //}
