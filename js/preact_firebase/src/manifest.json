@@ -1,6 +1,6 @@
 {
-  "name": "pwa_firebase",
-  "short_name": "pwa_firebase",
+  "name": "preact_firebase",
+  "short_name": "preact_firebase",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
