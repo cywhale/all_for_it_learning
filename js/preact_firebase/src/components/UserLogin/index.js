@@ -36,7 +36,7 @@ const UserLogin = () => {
   });
 
   const closePopup = () => {
-    OdbAuth(ucode.str, false);
+    //OdbAuth(ucode.str, false); //This works, but try to split OdbAuth only in stateOnChange 
     setState((preState) => ({
       ...preState,
       popup: false
@@ -68,7 +68,7 @@ const UserLogin = () => {
       return (uc);
   };
 
-  const OdbAuth = async (ucstr, gencode=false) => {
+  const OdbAuth = useCallback(async (ucstr, gencode=false) => {
     let ucstrx = ucstr;
     if (gencode && ucstrx === '') ucstrx = initUcode();
     const chkurl =  odbConfig.base + odbConfig.check + "?ucode=" + ucstrx;
@@ -108,7 +108,7 @@ const UserLogin = () => {
             }))*/
           );
         });
-  };
+  }, []);
 
   const fetchingUcode = (leng=32) => nanoid(leng);
 
@@ -248,6 +248,7 @@ const UserLogin = () => {
             srcurl={state.redirect}
             text='Click "Close Button" to hide popup'
             closePopup={ closePopup }
+            onChange={ OdbAuth(ucode.str, false) }
           />
         }
         </div>

@@ -16,7 +16,7 @@ class Popup extends React.Component {
       <div className="popup" id="loginpopupdiv">
         <div className="popup_inner">
           <div id="ssodiv" dangerouslySetInnerHTML={{ __html: ctent }} />
-          <button id="loginclose" onClick={this.props.closePopup}>Close</button>
+          <button id="loginclose" onClick={() => {this.props.closePopup; this.props.onChange}}>Close</button>
         </div>
       </div>
     );
