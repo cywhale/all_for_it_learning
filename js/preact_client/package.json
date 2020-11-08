@@ -2,11 +2,12 @@
   "name": "preact_client",
   "version": "0.0.1",
   "license": "MIT",
+  "main": "./src/index.js",
   "scripts": {
-    "build": "export NODE_ENV='production' && preact build --config webpack.config.js",
+    "build": "export NODE_ENV='production' && export ENABLE_BROTLI=true && preact build --config config/preact.config.js",
     "serve": "sirv build --cors --single --port 3000 --http2 --cert ./fullchain.pem --key ./privkey.pem",
-    "watch": "preact watch --config webpack.config.js",
-    "dev": "export PORT=3000 && export NODE_ENV='development' && preact watch --https --cert ./fullchain.pem --key ./privkey.pem --config webpack.config.js",
+    "watch": "preact watch --config config/preact.config.js",
+    "dev": "export PORT=3000 && export NODE_ENV='development' && preact watch --https --cert ./fullchain.pem --key ./privkey.pem --config config/preact.config.js",
     "lint": "eslint src",
     "test": "jest"
   },
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.11.5",
+    "autoprefixer": "^10.0.1",
     "babel-loader": "^8.1.0",
     "compression-webpack-plugin": "^6.0.5",
     "css-loader": "^4.3.0",
@@ -33,14 +35,17 @@
     "less": "^3.12.2",
     "less-loader": "^7.0.2",
     "node-sass": "^4.14.1",
-    "preact-cli": "^3.0.0",
+    "preact-cli": "^3.0.3",
     "sass-loader": "^10.0.3",
-    "sirv-cli": "1.0.3",
+    "sirv": "^1.0.7",
+    "sirv-cli": "^1.0.3",
     "style-loader": "^1.3.0",
-    "terser-webpack-plugin": "^5.0.3",
+    "terser-webpack-plugin": "^3.0.7",
     "ts-loader": "^8.0.4",
     "typescript": "^4.0.3",
-    "webpack-bundle-analyzer": "^4.1.0"
+    "webpack-bundle-analyzer": "^4.1.0",
+    "webpack-merge": "^5.3.0",
+    "zlib": "^1.0.5"
   },
   "dependencies": {
     "history": "^5.0.0",
