@@ -1,8 +1,5 @@
 import webpack from 'webpack';
 import path from 'path';
-// Plugins for webpack
-// new release: https://github.com/CesiumGS/cesium-webpack-example/blob/master/webpack.release.config.js
-// https://cesium.com/docs/tutorials/cesium-and-webpack/
 //import CopyWebpackPlugin from 'copy-webpack-plugin';
 //const ExtractTextPlugin = require('extract-text-webpack-plugin');
 //const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -21,9 +18,6 @@ const DuplicatePackageCheckerPlugin = require("duplicate-package-checker-webpack
 const CompressionPlugin = require('compression-webpack-plugin');
 const zlib = require('zlib');
 
-// Cesium
-const cesiumSource = "../node_modules/cesium/Source";
-const cesiumWorkers = "../Build/Cesium/Workers";
 // mode
 const testenv = {NODE_ENV: process.env.NODE_ENV};
 // const paths = require("./paths");
@@ -34,14 +28,10 @@ const publicUrl = publicPath.slice(0, -1);
 //const extractTextPluginOptions = { publicPath: Array(cssFilename.split('/').length).join('../') }
 
 const globOptions = {};
-        //nodir : true,
-        //cwd : "node_modules/cesium/Build/Cesium/",
-        //ignore: ["*Cesium.js", "**/NaturalEarthII/**/*", "**/maki/**/*", "**/IAU2006_XYS/**/*"]
-      //};
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 //https://github.com/preactjs/preact-cli/blob/81c7bb23e9c00ba96da1c4b9caec0350570b8929/src/lib/webpack/webpack-client-config.js
-const cesium_other_config = (config, env) => {
+const other_config = (config, env) => {
   var entryx;
   var outputx = {
       filename: '[name].[chunkhash:8].js', //'static/js/'
@@ -49,7 +39,6 @@ const cesium_other_config = (config, env) => {
       chunkFilename: '[name].[chunkhash:8].chunk.[id].js',
       publicPath: publicPath,
       //path: path.resolve(__dirname, 'build'),
-      // Needed to compile multiline strings in Cesium
       sourcePrefix: ''
   };
 
@@ -84,23 +73,12 @@ const cesium_other_config = (config, env) => {
   return {
     //mode: prod ? "production" : "development",
     //externals: {
-      //cesium: "Cesium",
     //},
     context: __dirname,
     entry: entryx,
-    output: outputx, /*{
-        filename: '[name].[chunkhash:8].js', //'static/js/'
-        sourceMapFilename: '[name].[chunkhash:8].map',
-        chunkFilename: '[name].[chunkhash:8].chunk.[id].js',
-        publicPath: publicPath,
-        path: path.resolve(__dirname, 'build'),
-        // Needed to compile multiline strings in Cesium
-        sourcePrefix: ''
-    },*/
-    //https://blog.isquaredsoftware.com/2017/03/declarative-earth-part-1-cesium-webpack/#including-cesium-in-production
+    output: outputx,
     unknownContextCritical : false,
     amd: {
-      // Enable webpack-friendly use of require in Cesium
       toUrlUndefined: true
     },
     node: {
@@ -118,7 +96,6 @@ const cesium_other_config = (config, env) => {
       extensions: ['.js', '.json', '.jsx', ''],
       mainFields: ['module', 'main'],
       alias: {
-        cesium: path.resolve(__dirname, cesiumSource),
         "react": "preact-compat",
         "react-dom": "preact-compat"
       }
@@ -143,30 +120,7 @@ const cesium_other_config = (config, env) => {
             test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
             use: [ 'url-loader' ],
             //name: 'static/media/[name].[hash:8].[ext]'
-        }, /*{
-            test: /\.worker\.js$/,
-            use: {
-              loader: 'worker-loader',
-              options: {
-                inline: true
-              }
-            },
-        },*/
-        {
-// Remove pragmas https://github.com/CesiumGS/cesium-webpack-example/blob/master/webpack.release.config.js
-          test: /\.js$/,
-          enforce: 'pre',
-          include: path.resolve(__dirname, '../node_modules/cesium/Source'),
-          sideEffects: false,
-          use: [{
-               loader: 'strip-pragma-loader',
-               options: {
-                 pragmas: {
-                   debug: false
-                 }
-               }
-          }]
-        }
+        },
         ]
     },
     devServer: {
@@ -210,7 +164,6 @@ const cesium_other_config = (config, env) => {
         }),
       ];
     },*/
-//https://github.com/CesiumGS/cesium-webpack-example/issues/7
     optimization: {
        usedExports: true,
        runtimeChunk: true, //'single'
@@ -256,14 +209,7 @@ const cesium_other_config = (config, env) => {
               // npm package names are URL-safe, but some servers don't like @ symbols
               //return `npm.${packageName.replace('@', '')}`;
             //},
-          },// https://blog.logrocket.com/guide-performance-optimization-webpack/
-          commons: {
-            name: 'Cesium',
-            test: /[\\/]node_modules[\\/]cesium/,
-            //minSize: 10000,
-            //maxSize: 300000,
-            chunks: 'all'
-          }
+          } // https://blog.logrocket.com/guide-performance-optimization-webpack/
         }
       }
     }
@@ -329,15 +275,6 @@ const baseConfig = (config, env) => {
           minRatio: 0.8
         })
     );
-// https://blog.isquaredsoftware.com/2017/03/declarative-earth-part-1-cesium-webpack/
-/*
-    config.plugins.push(
-      new webpack.DllReferencePlugin({
-        context : cesiumSource, //paths.cesiumSourceFolder,
-        manifest: require(path.join(__dirname, "..", "distdll/cesiumDll-manifest.json")),
-      })
-    );
-*/
     config.plugins.push( new webpack.optimize.OccurrenceOrderPlugin() );
     // Try to dedupe duplicated modules, if any:
     config.plugins.push( new DuplicatePackageCheckerPlugin() );
@@ -355,36 +292,6 @@ const baseConfig = (config, env) => {
   //config.plugins.push( new MiniCssExtractPlugin()); //{extractTextPluginOptions}) );
   //    filename: cssFilename
   //}) );
-/*
-  config.plugins.push(
-    new CopyWebpackPlugin({
-      patterns: [
-      {
-        from: path.join(cesiumSource, cesiumWorkers), //__dirname,
-        to: "Workers", //path.join(__dirname, "Workers"),
-      },
-      {
-        from: path.join(cesiumSource, "Assets"), //__dirname,
-        to: "Assets", //path.join(__dirname, "Assets"),
-        globOptions: globOptions
-      },
-      {
-        from: path.join(cesiumSource, "Widgets"), //__dirname,
-        to: "Widgets", //path.join(__dirname, "Widgets"),
-      },
-      { from: path.join(cesiumSource, 'ThirdParty'),
-        to: 'ThirdParty'
-      }
-      ]
-    })
-  );
-
-  config.plugins.push(
-    new webpack.DefinePlugin({
-       // Define relative base path in cesium for loading assets
-       CESIUM_BASE_URL: JSON.stringify('')
-    })
-  );*/
 
   config.plugins.push( new BundleAnalyzerPlugin({
       analyzerMode: 'static', //disabled
@@ -399,6 +306,6 @@ const baseConfig = (config, env) => {
 export default (config, env) => {
   return merge(
     baseConfig(config, env),
-    cesium_other_config(config, env)
+    other_config(config, env)
   );
 };

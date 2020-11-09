@@ -1,8 +1,8 @@
 //import { h } from 'preact';
 import style from './style.css';
 import MultiSelectSort from 'async!../../components/MultiSelectSort';
-import UserCookies from '../../components/UserCookies';
-import UserLogin from '../../components/UserLogin';
+import UserCookies from 'async!../../components/UserCookies';
+import UserLogin from 'async!../../components/UserLogin';
 
 const Home = () => (
 	<div class={style.home}>
