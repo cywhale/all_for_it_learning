@@ -85,3 +85,10 @@ git rebase --autostash FETCH_HEAD
 # Current branch master is up to date.
 # Applied autostash................... Done
 
+# Aborting: git pull --rebase
+# error: The following untracked working tree files would be overwritten by merge: xxx.js. Please move or remove them before you merge.
+git clean -d -fx #https://www.itread01.com/content/1545317044.html
+
+
+
+
