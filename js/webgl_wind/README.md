@@ -1,4 +1,7 @@
 ## (Fork and modified version, try it on preact but not work yet...)
+
+- fork from mapbox/webgl-wind: https://github.com/mapbox/webgl-wind
+
 ## WebGL Wind — [Demo](https://mapbox.github.io/webgl-wind/demo/)
 
 A WebGL-powered visualization of wind power.
