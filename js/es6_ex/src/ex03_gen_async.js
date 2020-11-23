@@ -1,3 +1,22 @@
+// Faster async functions and promises
+// https://v8.dev/blog/fast-async
+class Sleep {
+  constructor(timeout) {
+    this.timeout = timeout;
+  }
+  then(resolve, reject) {
+    const startTime = Date.now();
+    setTimeout(() => resolve(Date.now() - startTime),
+               this.timeout);
+  }
+}
+
+(async () => {
+  const actualTime = await new Sleep(1000);
+  console.log(actualTime);
+})();
+
+
 // first node app.js under /all_for_it_learning/node_geoapp
 // npm i node-fetch async --save
 const fetch = require("node-fetch");
