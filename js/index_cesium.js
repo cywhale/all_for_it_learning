@@ -1,7 +1,12 @@
 
-    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwZDBiMzA3NC0wYTIyLTQ0YzktYjBmMS05OTUzMTZhYWFiN2IiLCJpZCI6MTYwNDUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1Njk0NjE3MDd9.hUmltyGEmOOMSA78jKxR0ohSYPSZVyLaSB-e7HqTYv8';
+Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwZDBiMzA3NC0wYTIyLTQ0YzktYjBmMS05OTUzMTZhYWFiN2IiLCJpZCI6MTYwNDUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1Njk0NjE3MDd9.hUmltyGEmOOMSA78jKxR0ohSYPSZVyLaSB-e7HqTYv8';
 const evlay01url = 'https://ecodata.odb.ntu.edu.tw/pub/img/chla_neo_202004.png'; //'https://neo.sci.gsfc.nasa.gov/servlet/RenderData?si=1787328&cs=rgb&format=PNG&width=3600&height=1800';
-  
+
+var showBase = true; 
+var showImg = true;
+var showData= false;
+var coarCoast = null;
+var fineCoast = null;
 var imageryViewModels = [];
     imageryViewModels.push(new Cesium.ProviderViewModel({
         name : 'NOAA ETOPO\u00a0I',
@@ -100,11 +105,85 @@ const baseLayerPicker = new Cesium.BaseLayerPicker('baseLayerPickerContainer', {
     terrainProviderViewModels: terrainModels, 
 });
   
-const baseLayer = layers.get(0);
+var baseLayer = layers.get(0);
+const updateBasemap = () => {
+  baseLayer = layers.get(0);
+  if (!showBase) {
+    layers.remove(baseLayer, false);
+  }
+}
 //baseLayer.colorToAlpha = new Cesium.Color(0.0, 0.016, 0.059);
 //baseLayer.colorToAlphaThreshold = 0.2;
-  
-const sTileImg = layers.addImageryProvider(
+
+const loadCoastline = (dataurl) => {
+  const dataSourcePromise = viewer.dataSources.add(
+          new Cesium.GeoJsonDataSource.load(dataurl, {
+            crsNames: 'EPSG:4326',
+            clampToGround: true,
+            stroke: Cesium.Color.WHITE,
+            strokeWidth: 2
+          })
+    );
+  return(dataSourcePromise);
+}
+
+const toggleBase = document.getElementById("togglebasex");
+
+const toggleBaseFun = (baselayer, evt) => {
+  if (showBase) { //&& !baselayer.isDestroyed()
+    layers.remove(baselayer, false);
+    viewer.scene.globe.baseColor = Cesium.Color.BLACK;
+    if (coarCoast === null) {
+      loadCoastline('https://ecodata.odb.ntu.edu.tw/pub/geojson/globe/earth-topo-mobile.json')
+        .then(data => {
+          viewer.dataSources.add(data);
+          coarCoast = data;
+        })
+        .otherwise(err => console.log("Fetching coarse coastline got load err: ", err));
+    } else if (!viewer.dataSources.contains(coarCoast)) {
+      viewer.dataSources.add(coarCoast);
+      coarCoast.show = true;
+    } else {
+      coarCoast.show = true;
+    }  
+  } else {
+    if (coarCoast && coarCoast.show) { coarCoast.show = false; }
+    layers._layers.splice(0, 1, baseLayer);
+  }
+  showBase = !showBase;
+}; 
+
+toggleBase.addEventListener("click", toggleBaseFun.bind(null, baseLayer), false);
+
+const viewModel = baseLayerPicker.viewModel;//.selectedImagery
+const bindSelImagery = () => {
+  Cesium.knockout
+    .getObservable(viewModel, 'selectedImagery') //baseLayerPicker.viewModel
+    .subscribe(function() {
+      //if (baseLayer !== viewModel.selectedImagery) { //.name;
+      //layers.remove(baseLayer, true);
+      //baseLayer = viewModel.selectedImagery;
+      updateBasemap();  
+    });
+}
+const bindSelTerrain = () => {
+  Cesium.knockout
+    .getObservable(viewModel, 'selectedTerrain') //baseLayerPicker.viewModel
+    .subscribe(function() {
+      //if (baseLayer !== viewModel.selectedTerrain) { //.name;
+      //  layers.remove(baseLayer, true);
+      //  baseLayer = viewModel.selectedTerrain;
+      updateBasemap();
+    });
+}
+
+bindSelImagery();
+bindSelTerrain();
+
+var sTileImg;
+//var simgIdx = -1;
+const showImgLayer = () => {
+  sTileImg = layers.addImageryProvider(
     new Cesium.SingleTileImageryProvider({
         url: evlay01url,
         //rectangle: new Cesium.Rectangle(bnds[0], bnds[1], bnds[2], bnds[3]),
@@ -117,15 +196,35 @@ const sTileImg = layers.addImageryProvider(
     //              },            
         proxy : new Cesium.DefaultProxy('/proxy/') //https://github.com/CesiumGS/EarthKAMExplorer/blob/master/server/server.js
     })
-);
-  
-//sTileImg.colorToAlpha = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
-//sTileImg.colorToAlphaThreshold = 0.1;
-sTileImg.alpha = 0.5 
-const wsurl = 'https://ecodata.odb.ntu.edu.tw/pub/icon/windpower_blue01s.png';
-const siteurl = 'https://odbwms.oc.ntu.edu.tw/odbintl/rasters/getcplan/?name=bio_r0043'
-const sitecrs = 'EPSG:4326' 
-const dataSourcePromise = viewer.dataSources.add(
+  );
+  //sTileImg.colorToAlpha = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
+  //sTileImg.colorToAlphaThreshold = 0.1;
+  sTileImg.alpha = 0.5 
+}
+//init
+if (showImg) {
+  showImgLayer();
+  //simgIdx = layers.indexOf(sTileImg);
+}
+const toggleImg = document.getElementById("togglesimgx");
+
+const toggleImgFun = (imglayer, evt) => {
+  if (showImg) {
+    imglayer.show = false;
+  } else {
+    imglayer.show = true;
+  }
+  showImg = !showImg;
+}; 
+
+toggleImg.addEventListener("click", toggleImgFun.bind(null, sTileImg), false);
+
+var dataLayer = null;
+const showDataLayer = () => {
+  const wsurl = 'https://ecodata.odb.ntu.edu.tw/pub/icon/windpower_blue01s.png';
+  const siteurl = 'https://odbwms.oc.ntu.edu.tw/odbintl/rasters/getcplan/?name=bio_r0043'
+  const sitecrs = 'EPSG:4326' 
+  const dataSourcePromise = viewer.dataSources.add(
     Cesium.GeoJsonDataSource.load(siteurl, {
         crsNames: sitecrs,
         clampToGround: true,
@@ -133,9 +232,9 @@ const dataSourcePromise = viewer.dataSources.add(
         //stroke: Cesium.Color.fromBytes(127, 127, 127, 10),
         //markerColor: Cesium.Color.fromHsl(0, 0, 0, 0.01) //https://github.com/CesiumGS/cesium/issues/6307
     })
-);
+  );
   
-dataSourcePromise.then(function (dataSource) {
+  dataSourcePromise.then(function (dataSource) {
     const pixelRange = 15;
     const minimumClusterSize = 3;
     const enabled = true;
@@ -249,6 +348,32 @@ dataSourcePromise.then(function (dataSource) {
     viewer.flyTo(dataSource, {
         offset: new Cesium.HeadingPitchRange(0, (-Math.PI / 2)+0.0000001, 8000000) //-Cesium.Math.PI_OVER_FOUR, 20000000)
     })
+    dataLayer = dataSource
     //viewer.zoomTo(dataSource);
     //viewer.dataSources.remove(dataSource);
-});
+  });
+};
+
+//init
+if (showData) {
+  showDataLayer();
+  //simgIdx = layers.indexOf(sTileImg);
+}
+const toggleData = document.getElementById("toggledatax");
+
+const toggleDataFun = (evt) => {
+  if (showData) {
+    dataLayer.show = false;
+  } else {
+    if (dataLayer === null) {
+      showDataLayer();
+    } else {
+      dataLayer.show = true;
+    }
+  }
+  showData = !showData;
+}; 
+
+toggleData.addEventListener("click", toggleDataFun.bind(null), false);
+
+
