@@ -106,13 +106,21 @@ const updateBasemap = () => {
 //baseLayer.colorToAlpha = new Cesium.Color(0.0, 0.016, 0.059);
 //baseLayer.colorToAlphaThreshold = 0.2;
 
-const loadCoastline = (dataurl) => {
+const loadCoastline = () => {
   const dataSourcePromise = viewer.dataSources.add(
-          new Cesium.GeoJsonDataSource.load(dataurl, {
-            crsNames: 'EPSG:4326',
-            clampToGround: true,
-            stroke: Cesium.Color.WHITE,
-            strokeWidth: 2
+          //new Cesium.GeoJsonDataSource.load(dataurl, {
+          Cesium.IonResource.fromAssetId(200042).then(function (resource) { //20032 Geojson
+          //return Cesium.GeoJsonDataSource.load(resource, {
+            return Cesium.KmlDataSource.load(resource, {
+// for kml
+              camera: viewer.scene.camera,
+              canvas: viewer.scene.canvas,
+// for Geojson
+              //crsNames: 'EPSG:4326',
+              //clampToGround: true,
+              //stroke: Cesium.Color.WHITE,
+              //strokeWidth: 2
+            });
           })
     );
   return(dataSourcePromise);
@@ -128,8 +136,15 @@ const toggleBaseFun = (evt) => {
 //  }
     viewer.scene.globe.baseColor = Cesium.Color.BLACK;
     if (coarCoast === null) {
-      loadCoastline('https://ecodata.odb.ntu.edu.tw/pub/geojson/globe/earth-topo.json')
+      loadCoastline()
         .then(data => {
+// for kml
+          let entities = data.entities.values;
+/* not work
+          for (let i =0; i < entities.length; i++) {
+            entities[i].polyline.material.color.setColor(new Cesium.Color.WHITE.withAlpha(0.2)); //wall.outlineColor
+          }
+*/
           viewer.dataSources.add(data);
           coarCoast = data;
         })
