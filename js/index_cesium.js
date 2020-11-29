@@ -1,27 +1,14 @@
+import { ionConfig } from './.setting.js';
+Cesium.Ion.defaultAccessToken = ionConfig.token;
+const evlay01url = 'https://neo.sci.gsfc.nasa.gov/servlet/RenderData?si=1787328&cs=rgb&format=PNG&width=3600&height=1800';
 
-Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwZDBiMzA3NC0wYTIyLTQ0YzktYjBmMS05OTUzMTZhYWFiN2IiLCJpZCI6MTYwNDUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1Njk0NjE3MDd9.hUmltyGEmOOMSA78jKxR0ohSYPSZVyLaSB-e7HqTYv8';
-const evlay01url = 'https://ecodata.odb.ntu.edu.tw/pub/img/chla_neo_202004.png'; //'https://neo.sci.gsfc.nasa.gov/servlet/RenderData?si=1787328&cs=rgb&format=PNG&width=3600&height=1800';
-
-var showBase = true; 
+var showBase = true;
 var showImg = true;
 var showData= false;
 var coarCoast = null;
 var fineCoast = null;
 var imageryViewModels = [];
-    imageryViewModels.push(new Cesium.ProviderViewModel({
-        name : 'NOAA ETOPO\u00a0I',
-        iconUrl : Cesium.buildModuleUrl('https://ecodata.odb.ntu.edu.tw/pub/icon/etopo1_64x64.png'),
-        tooltip : 'NOAA Etopo',
-        creationFunction : function() {
-          return new Cesium.UrlTemplateImageryProvider({
-            url : Cesium.buildModuleUrl('https://gis.ngdc.noaa.gov/arcgis/rest/services/web_mercator/etopo1_hillshade/MapServer/tile/{z}/{y}/{x}?blankTile=True'),
-            credit : '© NOAA etopo1 hillshade',
-            //tilingScheme : new Cesium.GeographicTilingScheme()
-          });
-        }
-}));
-  
-  
+
 imageryViewModels.push(new Cesium.ProviderViewModel({
     name : 'Natural Earth\u00a0II',
     iconUrl : Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/naturalEarthII.png'),
@@ -32,7 +19,7 @@ imageryViewModels.push(new Cesium.ProviderViewModel({
         });
     }
 }));
-  
+
 imageryViewModels.push(new Cesium.ProviderViewModel({
     name : 'Open\u00adStreet\u00adMap',
     iconUrl : Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/openStreetMap.png'),
@@ -43,9 +30,8 @@ imageryViewModels.push(new Cesium.ProviderViewModel({
         });
     }
 }));
-  
+
 const terrainModels = Cesium.createDefaultTerrainProviderViewModels();
-  
   /*
    imageryViewModels.push(new Cesium.ProviderViewModel({
        name : 'Earth at Night',
@@ -81,7 +67,7 @@ var viewer = new Cesium.Viewer('cesiumContainer',{
     timeline: true,
     animation: true,
     geocoder: true,
-    baseLayerPicker: false, //baseLayerPicker, 
+    baseLayerPicker: false, //baseLayerPicker,
     imageryProvider: false,
     mapProjection : new Cesium.WebMercatorProjection(),
     //terrainProvider: baseLayer //Cesium.createWorldTerrain()
@@ -94,22 +80,27 @@ var viewer = new Cesium.Viewer('cesiumContainer',{
         tilingScheme : new Cesium.GeographicTilingScheme()
         //maximumLevel : 5
       });
-    //tms.alpha = 0.7; 
+    //tms.alpha = 0.7;
     //viewer.imageryLayers.addImageryProvider(tms);
-  */ 
+  */
 //var cesiumWidget = new Cesium.CesiumWidget('cesiumContainer', { imageryProvider: false });
 const layers = viewer.imageryLayers; //cesiumWidget
 const baseLayerPicker = new Cesium.BaseLayerPicker('baseLayerPickerContainer', {
     globe : viewer.scene.globe, //cesiumWidget
     imageryProviderViewModels: imageryViewModels,
-    terrainProviderViewModels: terrainModels, 
+    terrainProviderViewModels: terrainModels,
 });
-  
+
 var baseLayer = layers.get(0);
 const updateBasemap = () => {
   baseLayer = layers.get(0);
-  if (!showBase) {
-    layers.remove(baseLayer, false);
+  if (!showBase) { //&& layers._layers[0] === baseLayer) {
+    baseLayer.show = false;
+    //layers.remove(baseLayer, false);
+  }
+  if (showBase) { // && layers._layers[0] !== baseLayer) {
+    //layers._layers.splice(0, 1, baseLayer);
+    baseLayer.show = true;
   }
 }
 //baseLayer.colorToAlpha = new Cesium.Color(0.0, 0.016, 0.059);
@@ -129,12 +120,15 @@ const loadCoastline = (dataurl) => {
 
 const toggleBase = document.getElementById("togglebasex");
 
-const toggleBaseFun = (baselayer, evt) => {
+const toggleBaseFun = (evt) => {
   if (showBase) { //&& !baselayer.isDestroyed()
-    layers.remove(baselayer, false);
+//  if (layers._layers[0] === baseLayer) {
+    baseLayer.show = false;
+//  layers.remove(baseLayer, false);
+//  }
     viewer.scene.globe.baseColor = Cesium.Color.BLACK;
     if (coarCoast === null) {
-      loadCoastline('https://ecodata.odb.ntu.edu.tw/pub/geojson/globe/earth-topo-mobile.json')
+      loadCoastline('https://ecodata.odb.ntu.edu.tw/pub/geojson/globe/earth-topo.json')
         .then(data => {
           viewer.dataSources.add(data);
           coarCoast = data;
@@ -145,15 +139,18 @@ const toggleBaseFun = (baselayer, evt) => {
       coarCoast.show = true;
     } else {
       coarCoast.show = true;
-    }  
+    }
   } else {
     if (coarCoast && coarCoast.show) { coarCoast.show = false; }
-    layers._layers.splice(0, 1, baseLayer);
+    //if (layers._layers[0] !== baseLayer) {
+    //layers._layers.splice(0, 1, baseLayer);
+    baseLayer.show = true;
+    //}
   }
   showBase = !showBase;
-}; 
+};
 
-toggleBase.addEventListener("click", toggleBaseFun.bind(null, baseLayer), false);
+toggleBase.addEventListener("click", toggleBaseFun.bind(null), false); //null, baseLayer
 
 const viewModel = baseLayerPicker.viewModel;//.selectedImagery
 const bindSelImagery = () => {
@@ -163,7 +160,7 @@ const bindSelImagery = () => {
       //if (baseLayer !== viewModel.selectedImagery) { //.name;
       //layers.remove(baseLayer, true);
       //baseLayer = viewModel.selectedImagery;
-      updateBasemap();  
+      updateBasemap();
     });
 }
 const bindSelTerrain = () => {
@@ -193,13 +190,13 @@ const showImgLayer = () => {
         //alpha: 0.5,
     //  parameters: {transparent : 'true',
     //               format : 'image/png'
-    //              },            
+    //              },
         proxy : new Cesium.DefaultProxy('/proxy/') //https://github.com/CesiumGS/EarthKAMExplorer/blob/master/server/server.js
     })
   );
   //sTileImg.colorToAlpha = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
   //sTileImg.colorToAlphaThreshold = 0.1;
-  sTileImg.alpha = 0.5 
+  sTileImg.alpha = 0.5
 }
 //init
 if (showImg) {
@@ -215,7 +212,7 @@ const toggleImgFun = (imglayer, evt) => {
     imglayer.show = true;
   }
   showImg = !showImg;
-}; 
+};
 
 toggleImg.addEventListener("click", toggleImgFun.bind(null, sTileImg), false);
 
@@ -233,24 +230,24 @@ const showDataLayer = () => {
         //markerColor: Cesium.Color.fromHsl(0, 0, 0, 0.01) //https://github.com/CesiumGS/cesium/issues/6307
     })
   );
-  
+
   dataSourcePromise.then(function (dataSource) {
     const pixelRange = 15;
     const minimumClusterSize = 3;
     const enabled = true;
-  
+
     dataSource.clustering.enabled = enabled;
     dataSource.clustering.pixelRange = pixelRange;
     dataSource.clustering.minimumClusterSize = minimumClusterSize;
-  
+
     const entities = dataSource.entities.values;
     let entity;
     entities.forEach(entity => {
       entity.billboard.image = wsurl; //https://groups.google.com/forum/#!topic/cesium-dev/Nc0EO5IUN4o
-    });   
-    
+    });
+
     var removeListener;
-  
+
     const pinBuilder = new Cesium.PinBuilder();
     const pin50 = pinBuilder
       .fromText("50+", Cesium.Color.RED, 48)
@@ -267,14 +264,14 @@ const showDataLayer = () => {
     const pin10 = pinBuilder //Cesium.when(
       .fromText("10+", Cesium.Color.BLUE, 48)
       .toDataURL();
-  
+
     let singleDigitPins = new Array(8);
     for (var i = 0; i < singleDigitPins.length; ++i) {
-        singleDigitPins[i] = pinBuilder 
+        singleDigitPins[i] = pinBuilder
             .fromText("" + (i + 2), Cesium.Color.VIOLET, 48)
             .toDataURL();
     }
-  
+
     function customStyle() {
       if (Cesium.defined(removeListener)) {
         removeListener();
@@ -287,7 +284,7 @@ const showDataLayer = () => {
             cluster.billboard.id = cluster.label.id;
             cluster.billboard.verticalOrigin =
               Cesium.VerticalOrigin.BOTTOM;
-  
+
             if (clusteredEntities.length >= 50) {
               cluster.billboard.image = pin50;
             } else if (clusteredEntities.length >= 40) {
@@ -305,26 +302,26 @@ const showDataLayer = () => {
           }
         );
       }
-  
+
       // force a re-cluster with the new styling
       var pixelRange = dataSource.clustering.pixelRange;
       dataSource.clustering.pixelRange = 0;
       dataSource.clustering.pixelRange = pixelRange;
     }
-  
+
     // start with custom style
     customStyle();
-  
+
     const viewModel = {
       pixelRange: pixelRange,
       minimumClusterSize: minimumClusterSize,
       threshold: sTileImg.alpha, //colorToAlphaThreshold,
     };
     Cesium.knockout.track(viewModel);
-  
+
     const toolbar = document.getElementById("toolbar");
     Cesium.knockout.applyBindings(viewModel, toolbar);
-  
+
     function subscribeParameter(name) {
       Cesium.knockout
         .getObservable(viewModel, name)
@@ -332,10 +329,10 @@ const showDataLayer = () => {
           dataSource.clustering[name] = newValue;
         });
     }
-  
+
     subscribeParameter("pixelRange");
     subscribeParameter("minimumClusterSize");
-  
+
     //https://sandcastle.cesium.com/?src=Imagery%20Color%20To%20Alpha.html
     Cesium.knockout
     .getObservable(viewModel, "threshold")
@@ -343,8 +340,8 @@ const showDataLayer = () => {
       sTileImg.alpha = parseFloat( //colorToAlphaThreshold
         viewModel.threshold
       );
-    }); 
-  
+    });
+
     viewer.flyTo(dataSource, {
         offset: new Cesium.HeadingPitchRange(0, (-Math.PI / 2)+0.0000001, 8000000) //-Cesium.Math.PI_OVER_FOUR, 20000000)
     })
@@ -372,7 +369,7 @@ const toggleDataFun = (evt) => {
     }
   }
   showData = !showData;
-}; 
+};
 
 toggleData.addEventListener("click", toggleDataFun.bind(null), false);
 
