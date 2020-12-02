@@ -106,22 +106,23 @@ const updateBasemap = () => {
 //baseLayer.colorToAlpha = new Cesium.Color(0.0, 0.016, 0.059);
 //baseLayer.colorToAlphaThreshold = 0.2;
 
-const loadCoastline = () => {
+const loadCoastline = () => { //(dataurl) if load resource not from cesium ion
   const dataSourcePromise = viewer.dataSources.add(
-          //new Cesium.GeoJsonDataSource.load(dataurl, {
-          Cesium.IonResource.fromAssetId(200042).then(function (resource) { //20032 Geojson
-          //return Cesium.GeoJsonDataSource.load(resource, {
-            return Cesium.KmlDataSource.load(resource, {
-// for kml
+/* for Geojson
+        new Cesium.GeoJsonDataSource.load(dataurl, { */
+        Cesium.IonResource.fromAssetId(200032).then(function (resource) { //20032 Geojson, 20042 KML
+          return Cesium.GeoJsonDataSource.load(resource, {
+          //return Cesium.KmlDataSource.load(resource, {
+/* for kml
               camera: viewer.scene.camera,
-              canvas: viewer.scene.canvas,
+              canvas: viewer.scene.canvas,*/
 // for Geojson
-              //crsNames: 'EPSG:4326',
-              //clampToGround: true,
-              //stroke: Cesium.Color.WHITE,
-              //strokeWidth: 2
-            });
-          })
+              crsNames: 'EPSG:4326',
+              clampToGround: true,
+              stroke: Cesium.Color.WHITE,
+              strokeWidth: 2
+          });
+        })
     );
   return(dataSourcePromise);
 }
@@ -136,11 +137,11 @@ const toggleBaseFun = (evt) => {
 //  }
     viewer.scene.globe.baseColor = Cesium.Color.BLACK;
     if (coarCoast === null) {
-      loadCoastline()
+      loadCoastline() //dataurl) //not work this way for WFS, but see openocean proj
         .then(data => {
-// for kml
-          let entities = data.entities.values;
-/* not work
+/* for kml
+//        let entities = data.entities.values;
+// not work
           for (let i =0; i < entities.length; i++) {
             entities[i].polyline.material.color.setColor(new Cesium.Color.WHITE.withAlpha(0.2)); //wall.outlineColor
           }
@@ -235,7 +236,7 @@ var dataLayer = null;
 const showDataLayer = () => {
   const wsurl = 'https://ecodata.odb.ntu.edu.tw/pub/icon/windpower_blue01s.png';
   const siteurl = 'https://odbwms.oc.ntu.edu.tw/odbintl/rasters/getcplan/?name=bio_r0043'
-  const sitecrs = 'EPSG:4326' 
+  const sitecrs = 'EPSG:4326'
   const dataSourcePromise = viewer.dataSources.add(
     Cesium.GeoJsonDataSource.load(siteurl, {
         crsNames: sitecrs,
