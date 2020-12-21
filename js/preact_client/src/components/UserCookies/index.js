@@ -2,6 +2,7 @@
 /** @jsx h */
 import { render } from 'preact'; //Fragment
 import { useState, useEffect, useRef } from 'preact/hooks'; //useCallback
+//import axios from 'axios'; //202012 try set cookies from server //move to fastify_preact to try
 import Cookies from 'universal-cookie';
 //import { nanoid } from 'nanoid';
 import "../../style/style_usercookies.css";
@@ -24,21 +25,37 @@ const UserCookies = () => {
   }); */
   const cookieRef = useRef(null);
 
-  const setCookie = (c) => {
+  const setCookie = (c) => { // set Coookie by Client
     //console.log('setcookies before:', cookies); //document.cookie);
     let cookie = c.split('=');//document.cookie;
     //document.cookie = cookies + ';' + c;
     cookies.set(cookie[0], cookie[1], cookieOpts);
     console.log('setcookies after:', cookies.get(cookie[0], { doNotParse: true }));
   };
+/* move to fastify_preact
+  const servCookie = async () => {
+    try {
+        const res = await axios.get("/", {
+            headers: {
+                Cookie: "cookiepolycyagree=true;" //cookie2=value;
+            },
+            withCredentials:true
+        }) //.then...
+        console.log("Debug get cookie response: ", res);
+        return res;
 
+    } catch (err) {
+      console.log("Req cookie error: ", err);
+    }
+  };
+*/
   const CookiePopup = () => {
     const [popup, setPopup] = useState({
       details: false
     });
 
     const clickClose = () => {
-      //console.log('click close');
+      console.log('click close');
       const d = document.getElementById('useCookies');
       //if (!state.close) {
       setCookie('sylogentpolicyseen=true');
