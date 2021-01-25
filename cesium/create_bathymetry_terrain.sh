@@ -7,8 +7,11 @@ docker pull tumgis/ctb-dquantized-mesh
 #docker cp /YourData/geo.vrt ctb:/data/
 #docker cp /YourData/geo.vrt.ovr ctb:/data/
 docker run --rm -it --name ctb -v "/YourData/":"/data" tumgis/ctb-quantized-mesh
-# in docker
-ctb-tile -f Mesh -C -N -l -o terrain <inputfile.tif or input.vrt>
+# in docker, -c specify your thread, need some value to prevent core dump
+mkdir -p terrain
+ctb-tile -f Mesh -c 8 -C -N -o terrain <inputfile.tif or input.vrt>
+# for layer.json
+ctb-tile -f Mesh -c 8 -C -N -l -o terrain <inputfile.tif or input.vrt>
 
 # use go project of geo-data/cesium-terrain-server
 # https://github.com/geo-data/cesium-terrain-builder
