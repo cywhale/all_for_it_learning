@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+.toolToggle {
+    margin-top: -15px;
+    margin-left: -20px;
+    padding: 5px 5px 5px 5px;
+    z-index: 1003;
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.toolButn {
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 12px 6px;
+    background: transparent;
+    line-height: 1;
+  &:hover{
+    background-color:silver;
+    color:slategrey;
+    text-decoration:none;
+  }
+}
+.toolButn::before {
+   content: "";
+   display: inline-block;
+   vertical-align: middle;
+   width: 2em;
+   height: 2em;
+   background: url('../../assets/icons/gears96_01.png');
+   background-size: 100% auto;
+}
+
+.modalOverlay{
+   background: linear-gradient(135deg, rgba(7,42,126,1) 0%, rgba(6,31,107,0.55) 100%);
+   border:1px solid lightgrey;
+   border-radius:8px;
+   width: auto;
+   min-width: 22.5em;
+   height: auto;
+   min-height: 250px;
+   left:2%;
+   position:absolute;
+   top:8%;
+   overflow:hidden;
+   max-width:66em;
+  -webkit-transition: opacity 400ms ease-in;
+  -moz-transition: opacity 400ms ease-in;
+  transition: opacity 400ms ease-in;
+   display: block;
+   opacity:1;
+   pointer-events:auto;
+   z-index:999;
+   @media (min-width: 60em) {
+      height:100%;
+      max-width:66em;
+      width:100%;
+   }
+}   
+.modalOverlay .modal{
+    color:white;
+    width: 100%;
+    height: auto;
+    min-height: 250px;
+    margin:0 auto;
+    padding:0 2px;
+    /*overflow: auto;*/
+    -webkit-overflow-scrolling: touch;
+}
+.modalOverlay .modalHeader{
+    cursor: move;
+    max-height: 1.35em;
+    text-align: center;
+    padding-top: 10px;
+}
+.modalOverlay .modalHeader .close{
+      background-color:rgba(0,51,102,.75);
+      color:white;
+      font-size:24px;
+      padding:1px 5px;
+      position:absolute;
+      right:2px;
+      top:2px;
+      z-index:1000;
+}
+
+.ctrlwrapper {
+  padding: 0 5px;
+  margin: 30px auto;
+}
+.ctrlsect {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+.ctrlcolumn {
+  flex: 1;
+  border: 1px solid gray;
+  margin: 2px;
+  padding: 10px;
+  &:first-child { margin-left: 0; }
+  &:last-child { margin-right: 0; }
+}
+
+/* https://codepen.io/prasannaFE/pen/qbQOBJ https://codepen.io/thierry/pen/gPoWxj
+   https://codepen.io/andornagy/pen/RNeydj */
+.nav-tabs {
+  position: relative;
+}
+
+
+label.tablab {
+    max-width: 3.5em;
+    width: 3.5em;
+}
+
+.nav-tabs > h2 {
+}
+
+.nav-tabs > h2 {
+    position: absolute;
+    padding: 14px 20px;
+    margin: 0;
+    top: 0;
+    color: #fff;
+    font-size: 1em;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    max-width: 3.5em;
+    width: 3.5em;
+}
+
+.nav-tabs:hover > h2 {
+  outline: none !important;
+}
+
+label.tablab {
+    position: absolute;
+    padding: 24px 20px;
+    border-radius: 10px;
+    z-index: 1;
+}
+
+label.tablab:hover {
+    cursor: pointer;
+}
+
+label.tablab ~ label.tablab {
+    position: absolute;
+    top: 0;
+}
+
+input[name="tabs"] {
+    opacity: 0;
+    width: 6em;
+}
+
+label.tablab + input ~ input {
+    position: absolute;
+    top: 0;
+}
+
+.nav-tabs > h2 ~ h2 {
+    position: absolute;
+    top: 0;
+}
+
+.nav-tabs label.tablab:nth-child(1), .nav-tabs input:nth-child(2), .nav-tabs h2:nth-child(3) {
+    left: 0.2em;
+}
+
+.nav-tabs label.tablab:nth-child(5), .nav-tabs h2:nth-child(7) {
+    left: 6.2em;
+}
+
+.nav-tabs input:nth-child(6) {
+    left: 7.2em;
+}
+
+.nav-tabs label:nth-child(9), .nav-tabs h2:nth-child(11) {
+    left: 12.2em;
+}
+
+.nav-tabs input:nth-child(10) {
+    left: 14.2em;
+}
+
+input[name="tabs"]:focus + h2 {
+    outline: 1px dotted #000;
+    outline-offset: 10px;
+}
+
+input[name="tabs"]:checked + h2 {
+    background: rgba(0, 25, 40, 0.8);
+    border-radius: 5px;
+}
+
+input + h2 + div {
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px);
+
+    padding: 0 !important;
+    border: 0 !important;
+    height: 1px !important;
+    width: 1px !important;
+    overflow: hidden;
+}
+
+input:checked + h2 + div {
+    position: static !important;
+    padding: 0.25em !important;
+    height: auto !important;
+    width: auto !important;
+    min-width: 20.5em !important;
+}
+</style>
+
+</head>
+
+<body>
+    <div class="toolToggle">
+        <a class="style.toolButn" href="#ctrl"><i></i></a>
+    </div>
+    <div id="ctrl" class="modalOverlay">
+        <div class="modalHeader" id="ctrlheader">Contrl clustering 
+          <a id="toolClose" href="#" class="close">&times;</a>
+        </div>
+        <div class="modal">
+          <div class="nav-tabs">
+            <label class="tablab" for="tab-1" tabindex="0"></label>
+            <input id="tab-1" type="radio" name="tabs" checked="true" aria-hidden="true" />
+            <h2 data-toggle="tab">Layers</h2>
+            <div class="ctrlwrapper">
+              <section class="ctrlsect">
+                <div class="ctrlcolumn">
+                   <div id="ctrlsectdiv1">Test 1</div>
+                </div>
+              </section>
+            </div>
+            <label class="tablab" for="tab-2" tabindex="1"></label>
+            <input id="tab-2" type="radio" name="tabs" aria-hidden="true" />
+            <h2 data-toggle="tab">Time</h2>
+            <div class="ctrlwrapper">
+              <section class="ctrlsect">
+                <div class="ctrlcolumn">
+                  <div id="ctrlsectdiv2-1">Test2</div>
+                </div>
+              </section>
+            </div>
+            <label class="tablab" for="tab-3" tabindex="2"></label>
+            <input id="tab-3" type="radio" name="tabs" aria-hidden="true" />
+            <h2 data-toggle="tab">Details</h2>
+            <div class="ctrlwrapper">
+              <section class="ctrlsect">
+                <div class="ctrlcolumn">
+                  <div id="ctrlsectdiv3-1">Test3</div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+    </div>
+
+  <script>
+//Make the DIV element draggagle:
+//https://www.w3schools.com/howto/howto_js_draggable.asp
+draggable_element({dom: ".modalOverlay", dragArea: ".modalHeader"});
+
+function draggable_element(props) {
+  const {dom, dragArea} = props;
+
+  function dragElement(elem, dragArea) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // get the mouse cursor position at startup:
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      // call a function whenever the cursor moves:
+      document.onmousemove = elementDrag;
+    }
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // calculate the new cursor position:
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      // set the element's new position:
+      elem.style.top = (elem.offsetTop - pos2) + "px";
+      elem.style.left = (elem.offsetLeft - pos1) + "px";
+    }
+    function closeDragElement() {
+      /* stop moving when mouse button is released:*/
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+
+    if (elem.querySelector(dragArea)) {
+      /* if present, the header is where you move the DIV from:*/
+      const dragx = elem.querySelector(dragArea);
+      dragx.onmousedown = dragMouseDown;
+    } else { /* otherwise, move the DIV from anywhere inside the DIV:*/
+      elem.onmousedown = dragMouseDown;
+    }
+  }
+
+  const elems = document.querySelectorAll(dom);
+  elems.forEach((elem) => {
+    dragElement(elem, dragArea);
+  });
+}
+
+</script>
+</body>
+
+</html>
