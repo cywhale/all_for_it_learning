@@ -26,6 +26,9 @@ git push origin master
 # Cance/withdraw from git commit but not git push yet
 git reset HEAD~1 --soft
 
+# somthing you want to remove from git (written in .gitignore but not removed in current commit, e.g. .env)
+git rm .env --cached
+
 # A withdraw from git commit should be careful by using git reset HEAD^, that delete your local file if you commit local edit
 # Recover it:
 git reflog # to see which commit you want to recover
