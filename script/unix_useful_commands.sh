@@ -8,6 +8,17 @@ sudo netstat -tulpn | grep LISTEN
 sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/openjdk-14/bin/jar 2
 sudo update-alternatives --config jar
 
+# Change DNS ubuntu16
+sudo nano /etc/network/interfaces
+# dns-nameservers 1.1.1.1 8.8.8.8 208.67.222.222
+sudo /etc/init.d/networking restart
+# check: sudo nano /etc/resolv.conf
+# if have other additional DNS in resolv.conf, may in other files, just delete it and may need sudo shutdown -r now
+#sudo nano /etc/resolvconf/resolv.conf.d/head
+#sudo nano /etc/resolvconf/resolv.conf.d/tail
+#sudo nano /etc/resolvconf/resolv.conf.d/base
+#sudo systemctl status resolvconf.service
+
 # -----
 # Node devs
 # bundle analyze
