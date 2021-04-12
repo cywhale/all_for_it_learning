@@ -44,6 +44,11 @@ sudo systemctl restart systemd-hostnamed
 sudo /etc/init.d/networking restart
 curl -I localhost
 
+# change static ip
+sudo vi /etc/network/interface
+sudo ip addr flush eth0
+sudo systemctl restart networking.service
+
 # ---- others ----
 # Node devs
 # bundle analyze
