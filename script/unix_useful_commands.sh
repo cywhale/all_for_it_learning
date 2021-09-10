@@ -1,5 +1,8 @@
 # find files containing specific text
 find ./ -type f -exec grep -l "Text_to_find" {} \;
+# match all 3 character word starting with 'b' and ending in 't' 
+# https://www.cyberciti.biz/faq/grep-regular-expressions/
+grep '\<b.t\>' filename
 
 # list which port being listened
 sudo netstat -tulpn | grep LISTEN
