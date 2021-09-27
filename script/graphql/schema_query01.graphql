@@ -1,0 +1,153 @@
+"""
+schima queries of GraphQL, some from "The Road to GraphQL"/Robin Wieruch
+explorer: https://docs.github.com/en/graphql/overview/explorer
+"""
+
+# introspective
+query {
+  __schema {
+    types {
+      name
+      kind
+      description
+      fields {
+        name
+      }
+    }
+  }
+}
+
+# get type
+query {
+  __type(name: "Repository") {
+    name
+    kind
+    description
+    fields {
+      name
+    }
+  }
+}
+
+# Reuse code
+#### 1. use fragment
+{
+  book: organization(login: "Google") {
+    ...sharedFields
+  }
+  company: organization(login: "facebook") {
+    ...sharedFields
+  }
+}
+
+fragment sharedFields on Organization {
+  name
+  url
+}
+
+#### 2. query with argument
+query ($organization: String = "google") {
+  organization(login: $organization) {
+    name
+    url
+  }
+}
+
+"""
+an include directive, which includes the field when the Boolean type is set to true; 
+and the skip directive, which excludes it instead
+"""
+
+# Nested query
+query OrgRepo(
+  $organization: String!,
+  $repository: String!,
+  $withFork: Boolean!
+) {
+  organization(login: $organization) {
+    name
+    url
+    repository(name: $repository) {
+      id
+      name
+      url
+      forkCount @include(if: $withFork)
+    }
+  }
+}
+
+###### in variable
+{
+  "organization": "facebook",
+  "repository": "react",
+  "withFork": true
+}
+
+"""
+GraphQL Pagination
+"""
+
+query RepoPages {
+  user(login: "cywhale") {
+    name
+    url
+    repositories(first: 2) {
+      edges {
+        node {
+          name
+        }
+        cursor
+      }
+    }
+  }
+}
+
+###### return data
+{
+  "data": {
+    "user": {
+      "name": "Weng Chiyu",
+      "url": "https://github.com/cywhale",
+      "repositories": {
+        "edges": [
+          {
+            "node": {
+              "name": "all_for_it_learning"
+            },
+            "cursor": "Y3Vyc29yOnYyOpHOA9ILYA=="
+          },
+          {
+            "node": {
+              "name": "spat_struct_regen"
+            },
+            "cursor": "Y3Vyc29yOnYyOpHOBHIehA=="
+          }
+        ]
+      }
+    }
+  }
+}
+
+##### so that we know next fetch: "Y3Vyc29yOnYyOpHOBHIehA=="
+
+# add totalCount, pageInfo object with endCursor and hasNextPage fields
+query RepoPages {
+  user(login: "cywhale") {
+    name
+    url
+    repositories(first: 2, after: "Y3Vyc29yOnYyOpHOBHIehA==") {
+      totalCount
+      edges {
+        node {
+          name
+        }
+        cursor
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+}
+
