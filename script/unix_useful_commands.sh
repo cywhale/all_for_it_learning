@@ -11,6 +11,14 @@ sudo netstat -tulpn | grep LISTEN
 sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/openjdk-14/bin/jar 2
 sudo update-alternatives --config jar
 
+# after sudo apt-get update && upgrade
+# sudo apt install update-manager-core
+# sudo sudo do-release-upgrade
+# Got some errors libblas3:amd64 (3.7.1-4ubuntu1) ... update-alternatives: Error:  /usr/lib/x86_64-linux-gnu/libblas.so.3 已由 libblas.so.3 管理
+ sudo mv /var/lib/dpkg/alternatives/libblas.so*.* ~/temp/
+sudo dpkg --configure -a
+sudo apt-get install -f
+
 # Change DNS ubuntu16
 sudo nano /etc/network/interfaces
 # dns-nameservers 1.1.1.1 8.8.8.8 208.67.222.222
