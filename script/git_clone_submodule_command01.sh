@@ -65,6 +65,11 @@ git rebase --autostash FETCH_HEAD
 # Your changes are safe in the stash.
 # You can run "git stash pop" or "git stash drop" at any time.
 
+# But if you got a yarn.lock conflict so that cannot be merged/autostashed
+yarn install # it will solve yarn.lock conflict
+git add yarn.lock && git rebase --continue
+# then you can continue git push origin master
+
 # Sometimes file got unmerged make git rebase --autostash fail such as 
 # xxfile: needs merge
 # xxfile: unmerged (72902cbc64e51cda676da55130ca3e5c79951e59)
