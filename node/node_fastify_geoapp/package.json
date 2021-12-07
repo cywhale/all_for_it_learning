@@ -16,7 +16,7 @@
     "boom": "^7.3.0",
     "fastify": "^2.15.1",
     "fastify-plugin": "^1.6.1",
-    "fastify-static": "^4.2.4",
+    "fastify-static": "^4.4.1",
     "mongoose": "^5.9.16",
     "path": "^0.12.7",
     "point-of-view": "^3.8.0",
