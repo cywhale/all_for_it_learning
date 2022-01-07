@@ -14,3 +14,9 @@ sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
 sudo apt-get install --reinstall libudunits2-dev libgdal-dev libgeos-dev libproj-dev proj-bin gdal-bin
 
+# dependency conflicts due to package upgrade and still some other dependency no such corresponding upgrade
+# The following packages have unmet dependencies:  ffmpeg : Depends: libavcodec58....no going to be installed problem
+# apt-get install -f not work
+# try aptitude (and dont accept current dependecy options, otherwise just keep the same conflicts. Then aptitude may try downgrade automatically)
+sudo aptitude install ffmpeg
+ 
