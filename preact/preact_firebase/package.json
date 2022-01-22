@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "firebase": "^7.16.0",
-    "nanoid": "^3.1.16",
+    "nanoid": "^3.1.31",
     "preact": "^10.3.2",
     "preact-router": "^3.2.1",
     "react-select": "^3.1.0",
