@@ -23,6 +23,7 @@ sudo apt-get install --reinstall libudunits2-dev libgdal-dev libgeos-dev libproj
 # this will in general not work, even when setting LD_LIBRARY_PATH manually. See here for the reason why.
 
 # Error: ogr2ogr: symbol lookup error: /usr/lib/libgdal.so.30: undefined symbol: GEOSMakeValidWithParams_r
+nm -D /usr/lib/libgdal.so.30 | grep -n GEOSMakeValidWithParams_r
 # refer (but not reall work, but you can check) https://github.com/OSGeo/gdal/issues/2214 
 # apt-cache policy libgdal-dev
 # apt-cache policy libproj-dev
