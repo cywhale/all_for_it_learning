@@ -4,6 +4,18 @@ find ./ -type f -exec grep -l "Text_to_find" {} \;
 # https://www.cyberciti.biz/faq/grep-regular-expressions/
 grep '\<b.t\>' filename
 
+# dist-upgrade meet disk full (/boot) error or Write error : cannot write compressed block 
+df -h | grep boot
+uname -r #check current kernel used
+dpkg -l | tail -n +6 | grep -E 'linux-image-[0-9]+' | grep -Fv $(uname -r) #list all kernels existed
+ls -lh /boot/ #check if older initrd.img-xxx version still existed or not?
+sudo update-initramfs -d -k 5.4.0-91-generic #if it's a not-wanted version of kernel
+sudo dpkg --purge linux-modules-extra-5.4.0-91-generic linux-image-5.4.0-91-generic #carefully check version number and purge it
+# if encouter Removing symbolic link initrd.img.old  you may need to re-run your boot loader
+# sudo update-grub
+sudo apt --fix-broken install
+sudo apt autoremove
+
 # list which port being listened
 sudo netstat -tulpn | grep LISTEN
 
