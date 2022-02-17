@@ -12,7 +12,30 @@ dpkg -l | grep proj
 #apt purge librpoj0 libproj15
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
-sudo apt-get install --reinstall libudunits2-dev libgdal-dev libgeos-dev libproj-dev proj-bin gdal-bin
+sudo apt-get install --reinstall libudunits2-dev libsqlite3-dev libfontconfig1-dev libgdal-dev libgeos-dev libproj-dev proj-bin proj-data gdal-bin gdal-data python3-gdal
+which gdal-config
+#/usr/bin/gdal-config
+which geos-config
+#/usr/bin/geos-config
+which proj
+#/usr/bin/proj
+
+# Note in: https://rtask.thinkr.fr/installation-of-r-4-0-on-ubuntu-20-04-lts-and-tips-for-spatial-packages/
+# conti Note: r-cran-raster will install anoter version: libgdal29 libproj19 r-cran-terra r-cran-leaflet
+# NOTE error: libproj or sqlite3 not found in standard or given locations... I download PROJ the same version as 
+proj --version #8.2.0
+# wget https://download.osgeo.org/proj/proj-8.2.0.tar.gz; tar xvf proj-8.2.0.tar.gz; cd proj-8.2.0; ./configure --prefix=/usr
+# /usr/bin/pkg-config --libs proj
+# find /usr/lib/pkgconfig proj.pc PROJ version is wrong...why? manually change it...
+sudo apt install r-base-dev r-cran-devtools r-cran-rjava 
+R
+remotes::install_github("r-spatial/sf", configure.args = c("--with-proj-include=/usr/include/", "--with-proj-lib=/usr/lib/", "--with-gdal-config=/usr/bin/gdal-config", "--with-geos-config=/usr/bin/geos-config"))
+remotes::install_github("r-spatial/stars", configure.args = c("--with-proj-include=/usr/include/", "--with-proj-lib=/usr/lib/", "--with-gdal-config=/usr/bin/gdal-config", "--with-geos-config=/usr/bin/geos-config"))
+remotes::install_github("rspatial/rspatial", configure.args = c("--with-proj-include=/usr/include/", "--with-proj-lib=/usr/lib/", "--with-gdal-config=/usr/bin/gdal-config", "--with-geos-config=/usr/bin/geos-config"))
+devtools::install_github("rstudio/leaflet")
+#q()
+sudo apt install r-cran-gstat r-cran-maps r-cran-mapdata r-cran-ncdf4 r-cran-geor r-cran-ggmap
+update.packages(ask = FALSE, checkBuilt = TRUE, lib.loc = "/usr/local/lib/R/site-library")
 
 # and also for getting duplicated gdal
 # double free or corruption (out) ==> Aborted (core dumped) # https://github.com/r-spatial/sf/issues/1393
@@ -32,6 +55,8 @@ nm -D /usr/lib/libgdal.so.30 | grep -n GEOSMakeValidWithParams_r
 
 # First, completely remove gdal from Ubuntu 20.04 # https://lists.osgeo.org/pipermail/gdal-dev/2020-August/052465.html
 sudo apt purge $(dpkg -l | grep gdal | awk '{print $2}' | xargs)
+sudo apt purge $(dpkg -l | grep geos | awk '{print $2}' | xargs)
+sudo apt purge $(dpkg -l | grep libproj | awk '{print $2}' | xargs)
 # remove  all installed versions of gdal, geos and proj # https://github.com/r-spatial/sf/issues/1685
 sudo apt-get remove libproj-dev:amd64 
 sudo apt-get remove libproj19:amd64 
