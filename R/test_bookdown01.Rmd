@@ -3,14 +3,14 @@ title: "test cross ref"
 author: "cywhale"
 date: "2022/2/20"
 output:
-  bookdown::html_document2:
-    toc: yes
-    df_print: paged
-    number_sections: yes
   bookdown::word_document2:
     toc: yes
     number_sections: yes
     fig_caption: yes
+  bookdown::html_document2:
+    toc: yes
+    df_print: paged
+    number_sections: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -30,6 +30,8 @@ And see Table \@ref(tab:mtcars).
 ```{r mtcars, echo=FALSE}
 knitr::kable(mtcars[1:5, 1:5], caption = "The mtcars data.")
 ```
+
+## Environment
 
 ```{r}
 xfun::session_info('rmarkdown')

@@ -28,4 +28,11 @@
 **/cesium_css_modify.sh
 **/.testenv.js
 **/distdll
-
+.Rproj.user
+**/.Rproj.user
+**/.Rhistory
+**/.cache
+**/cache
+**/__pycache__
+**/dist
+**/dist_*
