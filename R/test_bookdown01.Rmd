@@ -1,0 +1,36 @@
+---
+title: "test cross ref"
+author: "cywhale"
+date: "2022/2/20"
+output:
+  bookdown::html_document2:
+    toc: yes
+    df_print: paged
+    number_sections: yes
+  bookdown::word_document2:
+    toc: yes
+    number_sections: yes
+    fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Including Plots
+
+test cross ref: Fig. \@ref(fig:pressure))
+
+```{r pressure, echo=FALSE, fig.cap = "pressure"}
+plot(pressure)
+```
+
+And see Table \@ref(tab:mtcars).
+
+```{r mtcars, echo=FALSE}
+knitr::kable(mtcars[1:5, 1:5], caption = "The mtcars data.")
+```
+
+```{r}
+xfun::session_info('rmarkdown')
+```
