@@ -1,3 +1,9 @@
+#vscode jupyter: The kernel failed to start due to the missing module 'prompt_toolkit.formatted_text'. Consider installing this module. View Jupyter [log](command:jupyter.viewOutput) for further details.
+#solution: reinstall ipykernel
+python3 -m pip uninstall -y jupyter jupyter_core jupyter-client jupyter-console jupyterlab_pygments notebook qtconsole nbconvert nbformat jupyterlab-widgets nbclient ipykernel ipynb
+# code & ## let code reinstall ipykernel
+
+
 #debug GDAL spatially-related packages installation
 #gdalinfo --version and got 
 # GDAL 3.3.2, free(): invalid pointer Aborted (core dumped)
