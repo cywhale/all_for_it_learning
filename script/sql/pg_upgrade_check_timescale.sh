@@ -19,3 +19,19 @@
   --check
 
 ## This file should be revised. Just backup ##
+
+## if install TimescaleDB and setup
+# Note: This configuration setup is based on the software environment only:
+# OS: Ubuntu 20.04. PostgreSQL: 11.11. The following content may be out of date.
+# The official manual https://docs.timescale.com/timescaledb provides most updated contents 
+sudo add-apt-repository ppa:timescale/timescaledb-ppa
+sudo apt update
+sudo apt install timescaledb-postgresql-11
+sudo timescaledb-tune # Configure PostgreSQL settings. 
+sudo systemctl restart postgresql
+psql –U postgres –d Your_Database # The following is under PostgreSQL command line:
+#># CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+#># SELECT CREATE_HYPERTABLE('ctd_odb', 'date', migrate_data => true)
+# Perform benchmark of the TimescaleDB performance by SQL query using EXPLAIN ANALYZE 
+#># EXPLAIN ANALYZE SELECT date_part('month', date) AS month, date_part('year', date) AS year, AVG(temperature) AS temperature FROM YOUR_TABLE GROUP BY year, month;
+# Execution Time: 7104.032 ms. Parallelized queries work.
