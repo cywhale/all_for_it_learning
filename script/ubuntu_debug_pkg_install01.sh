@@ -1,9 +1,15 @@
+#yarn install node-gyp "remove_cv_t" error #NodeJS #Webpack
+#/home/odbadmin/.cache/node-gyp/16.11.1/include/node/v8-internal.h:492:33: error: ‘remove_cv_t’ is not a member of ‘std’
+nano /home/odbadmin/.cache/node-gyp/16.11.1/include/node/v8-internal.h
+#and replace remove_cv_t to remove_cv
+
+#Python
 #vscode jupyter: The kernel failed to start due to the missing module 'prompt_toolkit.formatted_text'. Consider installing this module. View Jupyter [log](command:jupyter.viewOutput) for further details.
 #solution: reinstall ipykernel
 python3 -m pip uninstall -y jupyter jupyter_core jupyter-client jupyter-console jupyterlab_pygments notebook qtconsole nbconvert nbformat jupyterlab-widgets nbclient ipykernel ipynb
 # code & ## let code reinstall ipykernel
 
-
+#GDAL, R
 #debug GDAL spatially-related packages installation
 #gdalinfo --version and got 
 # GDAL 3.3.2, free(): invalid pointer Aborted (core dumped)
@@ -70,7 +76,7 @@ sudo apt-get remove libgeos-dev
 sudo apt-get remove libgeos-3.9.0:amd64 
 sudo apt-get remove libgdal-dev
 
-
+# U
 # dependency conflicts due to package upgrade and still some other dependency no such corresponding upgrade
 # The following packages have unmet dependencies:  ffmpeg : Depends: libavcodec58....no going to be installed problem
 # apt-get install -f not work
