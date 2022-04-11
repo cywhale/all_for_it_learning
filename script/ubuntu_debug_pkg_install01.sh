@@ -82,4 +82,10 @@ sudo apt-get remove libgdal-dev
 # apt-get install -f not work
 # try aptitude (and dont accept current dependecy options, otherwise just keep the same conflicts. Then aptitude may try downgrade automatically)
 sudo aptitude install ffmpeg
- 
+
+# NOTE MS Server 2008R2 cannot use ODBC Driver 18 under ubuntu20, and ODBC Driver 18 not for Ubuntu16.04 neither
+# BUT ODBC Driver 17 can work for Ubuntu16.04, and for remote SQL Server on MS Server 2008 R2
+# see installing-the-microsoft-odbc-driver-for-sql-server.md
+# https://github.com/MicrosoftDocs/sql-docs/blob/live/docs/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server.md#17
+
+
