@@ -19,7 +19,7 @@
     "eslint": "^6.8.0"
   },
   "dependencies": {
-    "async": "^3.2.0",
+    "async": "^3.2.2",
     "form-data": "^3.0.0",
     "node-fetch": "^3.1.1"
   }
