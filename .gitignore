@@ -31,8 +31,8 @@
 .Rproj.user
 **/.Rproj.user
 **/.Rhistory
-**/.cache
 **/cache
 **/__pycache__
 **/dist
 **/dist_*
+**/*_cache.sqlite
