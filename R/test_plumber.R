@@ -1,5 +1,5 @@
 # test plumber to cast taxize function as API
-library(plumber)
+# library(plumber)
 library(data.table)
 library(magrittr)
 library(taxize)
@@ -10,6 +10,6 @@ library(taxize)
 #* @get /sp
 function(q, db='pow') {
   synonyms(q, db=db) %>% 
-  .[q] %>% 
+  .[q] %>% #it's a list, not a data.frame  
   as.data.table 
 }
