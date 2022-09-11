@@ -65,6 +65,15 @@ git rebase --autostash FETCH_HEAD
 # Your changes are safe in the stash.
 # You can run "git stash pop" or "git stash drop" at any time.
 
+# if you create a branch 'subdir' on github and want pull on local directory that already has main
+git fetch --all
+git branch -r #### see branch appear on your local 
+git checkout -b subdir origin/subdir
+### in local $
+git branch #### select your branch, modify, add ., commit -m, and then push (not merge)
+git push -u origin subdir
+
+
 # But if you got a yarn.lock conflict so that cannot be merged/autostashed
 yarn install # it will solve yarn.lock conflict
 git add yarn.lock && git rebase --continue
