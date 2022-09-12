@@ -72,7 +72,8 @@ git checkout -b subdir origin/subdir
 ### in local $
 git branch #### select your branch, modify, add ., commit -m, and then push (not merge)
 git push -u origin subdir
-
+#clone only specific branch
+git clone -b subdir --single-branch https://github.com/User/xxx.git
 
 # But if you got a yarn.lock conflict so that cannot be merged/autostashed
 yarn install # it will solve yarn.lock conflict
