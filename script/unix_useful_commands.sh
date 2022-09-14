@@ -1,5 +1,9 @@
 # find files containing specific text
 find ./ -type f -exec grep -l "Text_to_find" {} \;
+
+# find files older than 100days and move
+find . -name "test*" -mtime +100 -exec mv {} /tmp/ \;
+
 # match all 3 character word starting with 'b' and ending in 't' 
 # https://www.cyberciti.biz/faq/grep-regular-expressions/
 grep '\<b.t\>' filename
@@ -18,6 +22,18 @@ sudo apt autoremove
 
 # list which port being listened
 sudo netstat -tulpn | grep LISTEN
+
+# clear disk https://itsfoss.com/free-up-space-ubuntu-linux/
+journalctl --disk-usage
+sudo journalctl --vacuum-time=10d #clear logs older than 10 days
+# get old versions of snap-installed software
+du -h /var/lib/snapd/snaps
+snap list --all | awk '/disabled/{print $1, $3}'
+set -eu
+sudo snap list --all | awk '/disabled/{print $1, $3}' |
+    while read snapname revision; do
+        sudo snap remove "$snapname" --revision="$revision"
+    done
 
 # update-alternatives for using different versions (e.g., jar, javac, java...)
 sudo update-alternatives --install /usr/bin/jar jar /usr/lib/jvm/openjdk-14/bin/jar 2
