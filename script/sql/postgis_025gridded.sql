@@ -58,7 +58,7 @@ SELECT dblink_disconnect('conn1');
 
 create extension POSTGIS;
 
-/* create a smaller (without lon/lat) 0.25-gridded Fishnet for marineheatwave
+/* create a smaller (without lon/lat) 0.25-gridded Fishnet for marineheatwave */
 CREATE OR REPLACE FUNCTION ST_CreateGrid2(
         nrow integer, ncol integer,
         xsize float8, ysize float8,
@@ -82,3 +82,21 @@ CREATE TABLE grid_025gr AS SELECT * FROM ST_CreateGrid2(720,1440,0.25,0.25,-180,
 UPDATE grid_025gr SET geom = ST_SetSRID (geom, 4326);
 CREATE INDEX grid_025gr_geom ON grid_025gr USING gist (geom);
 ALTER TABLE grid_025gr ADD gid serial PRIMARY KEY;
+
+/* if need change Alter Table xxx owner to xxx, the following not sure works or not?? 
+SELECT 'ALTER TABLE '|| schemaname || '."' || tablename ||'" OWNER TO bioer;' FROM pg_tables WHERE NOT schemaname IN ('pg_catalog', 'information_schema') ORDER BY schemaname, tablename;
+SELECT 'ALTER SEQUENCE '|| sequence_schema || '."' || sequence_name ||'" OWNER TO bioer;' FROM information_schema.sequences WHERE NOT sequence_schema IN ('pg_catalog', 'information_schema') ORDER BY sequence_schema, sequence_name;
+SELECT 'ALTER VIEW '|| table_schema || '."' || table_name ||'" OWNER TO bioer;' FROM information_schema.views WHERE NOT table_schema IN ('pg_catalog', 'information_schema') ORDER BY table_schema, table_name;
+*/
+
+ALTER TABLE td ADD CONSTRAINT td_gid_fkey FOREIGN KEY (gid) REFERENCES grid_025gr (gid) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE sst_anomaly_without_detrend ADD CONSTRAINT ano_gid_fkey FOREIGN KEY (gid) REFERENCES grid_025gr (gid) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE threshold_anomaly_without_detrend ADD CONSTRAINT thres_gid_fkey FOREIGN KEY (gid) REFERENCES grid_025gr (gid) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
+CREATE INDEX row_for_lat_index ON grid_025gr USING btree (row);
+CREATE INDEX col_for_lon_index ON grid_025gr USING btree (col);
+CREATE INDEX grid025_longitude_index ON grid_025gr USING btree (longitude);
+CREATE INDEX grid025_latitude_index ON grid_025gr USING btree (latitude);
+
+create extension timescaledb;
+SELECT create_hypertable('td', 'date', migrate_data => true);
+SELECT create_hypertable('sst_anomaly_without_detrend', 'date', migrate_data => true);
