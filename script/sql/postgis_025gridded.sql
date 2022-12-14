@@ -88,6 +88,10 @@ SELECT 'ALTER TABLE '|| schemaname || '."' || tablename ||'" OWNER TO bioer;' FR
 SELECT 'ALTER SEQUENCE '|| sequence_schema || '."' || sequence_name ||'" OWNER TO bioer;' FROM information_schema.sequences WHERE NOT sequence_schema IN ('pg_catalog', 'information_schema') ORDER BY sequence_schema, sequence_name;
 SELECT 'ALTER VIEW '|| table_schema || '."' || table_name ||'" OWNER TO bioer;' FROM information_schema.views WHERE NOT table_schema IN ('pg_catalog', 'information_schema') ORDER BY table_schema, table_name;
 */
+/*
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO bioer;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO bioer;
+*/
 
 ALTER TABLE td ADD CONSTRAINT td_gid_fkey FOREIGN KEY (gid) REFERENCES grid_025gr (gid) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE sst_anomaly_without_detrend ADD CONSTRAINT ano_gid_fkey FOREIGN KEY (gid) REFERENCES grid_025gr (gid) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION;
@@ -100,3 +104,95 @@ CREATE INDEX grid025_latitude_index ON grid_025gr USING btree (latitude);
 create extension timescaledb;
 SELECT create_hypertable('td', 'date', migrate_data => true);
 SELECT create_hypertable('sst_anomaly_without_detrend', 'date', migrate_data => true);
+SELECT set_chunk_time_interval('sst_anomaly_without_detrend', INTERVAL '1 month');
+SELECT set_chunk_time_interval('td', INTERVAL '1 month');
+
+CREATE INDEX ano_gid_index ON sst_anomaly_without_detrend (date DESC, gid);
+CREATE INDEX td_gid_index ON td (date DESC, gid);
+CREATE INDEX ano_level_notnull_index ON sst_anomaly_without_detrend (date DESC, level) WHERE level IS NOT NULL;
+VACUUM ANALYZE sst_anomaly_without_detrend;
+VACUUM ANALYZE td;
+
+EXPLAIN ANALYZE select T.lon, T.lat, T.distance, T.date, S.sst_anomaly, S.level from sst_anomaly_without_detrend S inner join td T on S.gid = T.gid and S.date = T.date and S.level >= 3;
+/* Awful slow...
+ Gather  (cost=4641863.73..5035674.58 rows=64474 width=40) (actual time=594559.938..603370.265 rows=238565 loops=1)
+   Workers Planned: 8
+   Workers Launched: 8
+   ->  Parallel Hash Join  (cost=4640863.73..5028227.18 rows=8059 width=40) (actual time=593752.434..601906.968 rows=26507 loops=9)
+         Hash Cond: ((t_39.gid = s_1.gid) AND (t_39.date = s_1.date))
+         ->  Parallel Append  (cost=0.00..364351.62 rows=3066901 width=32) (actual time=152.075..7196.764 rows=2726141 loops=9)
+               ->  Parallel Seq Scan on _hyper_1_39_chunk t_39  (cost=0.00..1928.75 rows=79775 width=32) (actual time=149.678..511.906 rows=135618 loops=1)
+               ->  Parallel Seq Scan on _hyper_1_164_chunk t_164  (cost=0.00..1816.65 rows=75165 width=32) (actual time=149.650..495.901 rows=127780 loops=1)
+               ...
+               ->  Parallel Seq Scan on _hyper_1_401_chunk t_401  (cost=0.00..245.15 rows=10115 width=32) (actual time=165.092..315.900 rows=17195 loops=1)
+         ->  Parallel Hash  (cost=4638418.57..4638418.57 rows=163011 width=20) (actual time=593570.948..593572.388 rows=144736 loops=9)
+               Buckets: 2097152  Batches: 1  Memory Usage: 87904kB
+               ->  Parallel Append  (cost=0.42..4638418.57 rows=163011 width=20) (actual time=33100.773..593490.095 rows=144736 loops=9)
+                     ->  Parallel Index Scan Backward using _hyper_2_487_chunk_ano_level_notnull_index on _hyper_2_487_chunk s_1  (cost=0.42..13946.22 rows=6038 width=20) (actual time=32251.954..42900.487 rows=18063 loops=1)
+                           Index Cond: (level >= 3)
+                     ->  Parallel Index Scan Backward using _hyper_2_936_chunk_ano_level_notnull_index on _hyper_2_936_chunk s_450  (cost=0.42..13902.22 rows=5978 width=20) (actual time=32183.267..38996.690 rows=18755 loops=1)
+                           Index Cond: (level >= 3)
+                     ->  Parallel Index Scan Backward using _hyper_2_925_chunk_ano_level_notnull_index on _hyper_2_925_chunk s_439  (cost=0.42..13658.50 rows=5645 width=20) (actual time=33972.584..39777.908 rows=17432 loops=1)
+                           Index Cond: (level >= 3)
+                     ...
+                     ->  Parallel Seq Scan on _hyper_2_968_chunk s_482  (cost=0.00..14040.00 rows=8735 width=20) (actual time=10.262..161.194 rows=21066 loops=1)
+                           Filter: (level >= 3)
+                           Rows Removed by Filter: 1015734
+                     ->  Parallel Seq Scan on _hyper_2_969_chunk s_483  (cost=0.00..14040.00 rows=10930 width=20) (actual time=32193.001..32338.571 rows=25738 loops=1)
+                           Filter: (level >= 3)
+                           Rows Removed by Filter: 1011062
+ Planning Time: 8214.459 ms
+ JIT:
+   Functions: 26316
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 3764.519 ms, Inlining 1182.240 ms, Optimization 184568.529 ms, Emission 109459.001 ms, Total 298974.290 ms
+ Execution Time: 603884.467 ms
+(1497 rows)                   
+*/
+
+SELECT set_chunk_time_interval('sst_anomaly_without_detrend', INTERVAL '3 month');
+SELECT set_chunk_time_interval('td', INTERVAL '3 month');
+/* Improve after setting new time-ineterval: 3 month
+ Gather  (cost=4641863.73..5035674.58 rows=64474 width=40) (actual time=37174.013..39278.116 rows=238565 loops=1)
+   Workers Planned: 8
+   Workers Launched: 8
+   ->  Parallel Hash Join  (cost=4640863.73..5028227.18 rows=8059 width=40) (actual time=36630.867..38356.346 rows=26507 loops=9)
+         Hash Cond: ((t_39.gid = s_1.gid) AND (t_39.date = s_1.date))
+         ->  Parallel Append  (cost=0.00..364351.62 rows=3066901 width=32) (actual time=0.068..767.093 rows=2726141 loops=9)
+               ->  Parallel Seq Scan on _hyper_1_39_chunk t_39  (cost=0.00..1928.75 rows=79775 width=32) (actual time=0.043..30.335 rows=135618 loops=1)
+               ...
+               ->  Parallel Seq Scan on _hyper_1_401_chunk t_401  (cost=0.00..245.15 rows=10115 width=32) (actual time=0.029..4.552 rows=17195 loops=1)
+         ->  Parallel Hash  (cost=4638418.57..4638418.57 rows=163011 width=20) (actual time=36623.418..36623.659 rows=144736 loops=9)
+               Buckets: 2097152  Batches: 1  Memory Usage: 87936kB
+               ->  Parallel Append  (cost=0.42..4638418.57 rows=163011 width=20) (actual time=32662.617..36544.287 rows=144736 loops=9)
+                     ->  Parallel Index Scan Backward using _hyper_2_487_chunk_ano_level_notnull_index on _hyper_2_487_chunk s_1  (cost=0.42..13946.22 rows=6038 width=20) (actual time=32216.431..32241.981 rows=18063 loops=1)
+                           Index Cond: (level >= 3)
+                     ->  Parallel Index Scan Backward using _hyper_2_936_chunk_ano_level_notnull_index on _hyper_2_936_chunk s_450  (cost=0.42..13902.22 rows=5978 width=20) (actual time=32034.883..32060.795 rows=18755 loops=1)
+                           Index Cond: (level >= 3)
+                     ...
+                     ->  Parallel Seq Scan on _hyper_2_968_chunk s_482  (cost=0.00..14040.00 rows=8735 width=20) (actual time=9.665..153.210 rows=21066 loops=1)
+                           Filter: (level >= 3)
+                           Rows Removed by Filter: 1015734
+                     ->  Parallel Seq Scan on _hyper_2_969_chunk s_483  (cost=0.00..14040.00 rows=10930 width=20) (actual time=32113.661..32241.554 rows=25738 loops=1)
+                           Filter: (level >= 3)
+                           Rows Removed by Filter: 1011062
+ Planning Time: 365.511 ms
+ JIT:
+   Functions: 26316
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 3297.170 ms, Inlining 741.871 ms, Optimization 182623.868 ms, Emission 110458.458 ms, Total 297121.366 ms
+ Execution Time: 39649.694 ms
+(1497 rows)
+*/
+
+SELECT set_chunk_time_interval('sst_anomaly_without_detrend', INTERVAL '6 month');
+SELECT set_chunk_time_interval('td', INTERVAL '6 month');
+/* if set interval to 6 month, slightly improved
+ Planning Time: 319.493 ms
+ JIT:
+   Functions: 26316
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 3360.487 ms, Inlining 787.079 ms, Optimization 184226.145 ms, Emission 110643.413 ms, Total 299017.124 ms
+ Execution Time: 40309.816 ms
+(1497 rows)
+*/
