@@ -218,6 +218,39 @@ SELECT set_chunk_time_interval('sst_anomaly_without_detrend', INTERVAL '1 year')
 SELECT set_chunk_time_interval('td', INTERVAL '1 year');
 /* test */
 explain analyze select * from sst_anomaly_without_detrend where gid=171668 AND level >= 1 ORDER by date desc;
+/* NOTE: ORDER BY -> cause quicksort, and each chunk (1yr) use 25kB only?
+         Actually use _hyper_2_968_chunk_ano_gid_index (ano_gid_index we created)
 
+
+ Gather Merge  (cost=5300817.90..5300818.08 rows=9 width=36) (actual time=19805.478..19937.106 rows=50 loops=1)
+   Workers Planned: 9
+   Workers Launched: 9
+   ->  Sort  (cost=5300817.74..5300817.74 rows=1 width=36) (actual time=19389.823..19391.804 rows=5 loops=10)
+         Sort Key: _hyper_2_968_chunk.date DESC
+         Sort Method: quicksort  Memory: 25kB
+         Worker 0:  Sort Method: quicksort  Memory: 25kB
+         Worker 1:  Sort Method: quicksort  Memory: 25kB
+         Worker 2:  Sort Method: quicksort  Memory: 25kB
+         Worker 3:  Sort Method: quicksort  Memory: 25kB
+         Worker 4:  Sort Method: quicksort  Memory: 25kB
+         Worker 5:  Sort Method: quicksort  Memory: 25kB
+         Worker 6:  Sort Method: quicksort  Memory: 25kB
+         Worker 7:  Sort Method: quicksort  Memory: 25kB
+         Worker 8:  Sort Method: quicksort  Memory: 25kB
+         ->  Parallel Append  (cost=0.42..5300817.73 rows=1 width=36) (actual time=17113.874..19391.684 rows=5 loops=10)
+               ->  Parallel Index Scan using _hyper_2_968_chunk_ano_gid_index on _hyper_2_968_chunk  (cost=0.42..10907.03 rows=1 width=36) (actual time=16410.275..16410.276 rows=0 loops=1)
+                     Index Cond: (gid = 171668)
+                     Filter: (level >= 1)
+                     Rows Removed by Filter: 1
+               ->  Parallel Index Scan using _hyper_2_924_chunk_ano_gid_index on _hyper_2_924_chunk  (cost=0.42..10907.03 rows=1 width=36) (actual time=16477.649..16477.649 rows=0 loops=1)
+               ...
+ Planning Time: 51.463 ms
+ JIT:
+   Functions: 19440
+   Options: Inlining true, Optimization true, Expressions true, Deforming true
+   Timing: Generation 2605.941 ms, Inlining 788.042 ms, Optimization 104408.669 ms, Emission 61791.495 ms, Total 169594.148 ms
+ Execution Time: 20148.074 ms
+(1916 rows)      
+*/
 
 
