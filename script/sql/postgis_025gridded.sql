@@ -214,8 +214,8 @@ $ sudo systemctl restart postgresql
 $apt install pgtop
 $pg_top -U xxx -d marineheatwave -W
 */
-SELECT set_chunk_time_interval('sst_anomaly_without_detrend', INTERVAL '6 month');
-SELECT set_chunk_time_interval('td', INTERVAL '6 month');
+SELECT set_chunk_time_interval('sst_anomaly_without_detrend', INTERVAL '1 year');
+SELECT set_chunk_time_interval('td', INTERVAL '1 year');
 /* test */
 explain analyze select * from sst_anomaly_without_detrend where gid=171668 AND level >= 1 ORDER by date desc;
 
