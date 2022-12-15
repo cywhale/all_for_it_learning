@@ -196,3 +196,28 @@ SELECT set_chunk_time_interval('td', INTERVAL '6 month');
  Execution Time: 40309.816 ms
 (1497 rows)
 */
+
+/* But for a simpler query index, larger chunk seems preferred
+   There is another problem about parallel scan not started and
+   Query performance of index scans much slower than parallel scan
+   https://dba.stackexchange.com/questions/242918/query-performance-of-index-scans-slower-than-parallel-seq-scan-on-postgres
+   
+in postgresql.conf, force parallel scan being used:
+
+min_parallel_table_scan_size = 1MB
+min_parallel_index_scan_size = 128kB
+parallel_setup_cost = 0 ## this is the prerequisites to make the parallelism on
+parallel_tuple_cost = 0
+$ sudo systemctl restart postgresql
+*/
+/* use pg_top to monitor parallel workers by 
+$apt install pgtop
+$pg_top -U xxx -d marineheatwave -W
+*/
+SELECT set_chunk_time_interval('sst_anomaly_without_detrend', INTERVAL '6 month');
+SELECT set_chunk_time_interval('td', INTERVAL '6 month');
+/* test */
+explain analyze select * from sst_anomaly_without_detrend where gid=171668 AND level >= 1 ORDER by date desc;
+
+
+
