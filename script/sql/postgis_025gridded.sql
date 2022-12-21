@@ -37,8 +37,12 @@ LC_CTYPE = 'zh_TW.utf8';
 
 /* psql -U postgres -d marineheatwave */
 CREATE EXTENSION dblink;
-/* create /var/lib/postgresql/.pgpass by https://stackoverflow.com/questions/16786011/postgresql-pgpass-not-working 
+/* create /var/lib/postgresql/.pgpass by https://stackoverflow.com/questions/16786011/postgresql-pgpass-not-working
    https://www.postgresql.org/docs/current/contrib-dblink-connect.html
+$sudo nano /var/lib/postgresql/.pgpass
+127.0.0.1:5432:USER:DB:PASS
+sudo chmod 600 /var/lib/postgresql/.pgpass
+sudo chown postgres:postgres /var/lib/postgresql/.pgpass
 */
 SELECT dblink_connect('conn1', 'hostaddr=127.0.0.1 port=5432 dbname=postgres user=postgres');
 
