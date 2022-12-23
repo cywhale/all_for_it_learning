@@ -3,6 +3,23 @@
 nano /home/odbadmin/.cache/node-gyp/16.11.1/include/node/v8-internal.h
 #and replace remove_cv_t to remove_cv
 
+#nginx brotli when upgrading nginx to newer version, need also upgrading ngx_brotli modules
+#https://linuxhint.com/enable-brotli-compression-nginx/
+#modify 1.22.1 to your current version of nginx by nginx -v
+wget https://nginx.org/download/nginx-1.22.1.tar.gz
+tar xzf nginx-1.22.1.tar.gz
+#https://github.com/google/ngx_brotli
+git clone https://github.com/google/ngx_brotli.git
+cd nginx-1.22.1/
+sudo ./configure --with-compat --add-dynamic-module=../ngx_brotli
+sudo make modules
+cd objs
+sudo cp ngx_http_brotli*.so /etc/nginx/modules/
+# in /etc/nginx/nginx.conf
+# load_module modules/ngx_http_brotli_filter_module.so;
+# load_module modules/ngx_http_brotli_static_module.so;
+sudo systemctl restart nginx
+
 #CUDA
 wget https://developer.download.nvidia.com/compute/cuda/11.6.2/local_installers/cuda-repo-ubuntu2004-11-6-local_11.6.2-510.47.03-1_amd64.deb
 sudo dpkg -i cuda-repo-ubuntu2004-11-6-local_11.6.2-510.47.03-1_amd64.deb 
