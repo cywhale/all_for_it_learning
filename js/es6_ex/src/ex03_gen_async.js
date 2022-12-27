@@ -7,7 +7,7 @@ class Sleep {
   then(resolve, reject) {
     const startTime = Date.now();
     setTimeout(() => resolve(Date.now() - startTime),
-               this.timeout);
+      this.timeout);
   }
 }
 
@@ -19,8 +19,9 @@ class Sleep {
 
 // first node app.js under /all_for_it_learning/node_geoapp
 // npm i node-fetch async --save
-const fetch = require("node-fetch");
-async = require('async');
+// const fetch = require("node-fetch");
+// async = require('async');
+import fetch from 'node-fetch';
 
 //function readnames() { 
 const readnames = () =>
@@ -30,8 +31,8 @@ const readnames = () =>
       Accept: 'application/json'
     }
   })
-  .then(res => res.json())
-  .then(data => Object.values(data).map(item => item.name))
+    .then(res => res.json())
+    .then(data => Object.values(data).map(item => item.name))
 //}
 
 readnames().then(data => console.log(data))

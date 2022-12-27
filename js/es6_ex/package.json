@@ -1,5 +1,6 @@
 {
   "name": "es6_ex",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -19,8 +20,8 @@
     "eslint": "^6.8.0"
   },
   "dependencies": {
-    "async": "^3.2.2",
+    "async": "^3.2.4",
     "form-data": "^3.0.0",
-    "node-fetch": "^3.2.10"
+    "node-fetch": "^3.3.0"
   }
 }
