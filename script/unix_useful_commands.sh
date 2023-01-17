@@ -4,6 +4,9 @@ find ./ -type f -exec grep -l "Text_to_find" {} \;
 # find files older than 100days and move
 find . -name "test*" -mtime +100 -exec mv {} /tmp/ \;
 
+# compress all and remove original files
+sudo tar -zvcf /media/disk1/cmd/tmp_bak/bak_2022_log.tar.gz ./2022* --remove-files
+
 # match all 3 character word starting with 'b' and ending in 't' 
 # https://www.cyberciti.biz/faq/grep-regular-expressions/
 grep '\<b.t\>' filename
