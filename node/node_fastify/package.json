@@ -19,7 +19,7 @@
     "fastify-plugin": "^1.6.1",
     "fastify-static": "^4.4.1",
     "fs": "0.0.1-security",
-    "mongoose": "^5.9.13",
+    "mongoose": "^5.13.15",
     "path": "^0.12.7"
   },
   "devDependencies": {
