@@ -26,6 +26,11 @@ sudo apt autoremove
 # list which port being listened
 sudo netstat -tulpn | grep LISTEN
 
+# some old host has old SSH key that may have problem in ssh/scp connection: key type ssh-dss not in PubkeyAcceptedKeyTypes
+scp -oHostKeyAlgorithms=+ssh-dss #or ssh ....
+# ssh-keygen  ## generate ssh key in $HOME/.ssh/id_rsa
+# ssh-copy-id user@192.168.x.x # to prevent input passwords in prompt which ush ssh user@192.168.x.x
+
 # clear disk https://itsfoss.com/free-up-space-ubuntu-linux/
 journalctl --disk-usage
 sudo journalctl --vacuum-time=10d #clear logs older than 10 days
