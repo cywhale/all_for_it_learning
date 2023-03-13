@@ -28,7 +28,25 @@ ALTER TABLE grid_025gr ADD gid serial PRIMARY KEY;
 /* check consistency of lon/at between tables */
 select distinct T.lon as tlon, T.lat as tlat, G.lon as glon, G.lat as glat from grid_025gr G FULL OUTER JOIN td T ON G.lat = T.lat and G.lon= T.lon;
 
+/* if gid must be updated from grid_025gr, since sst_anomaly_without_detrend is always updating by external python, see belowing ---- */
+/* ---------------------------------------------------------------------------------------------------------------------------------- */
+CREATE OR REPLACE FUNCTION update_anomaly_gid() RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE sst_anomaly_without_detrend
+    SET gid = grid_025gr.gid
+    FROM grid_025gr
+    WHERE sst_anomaly_without_detrend.lon = grid_025gr.lon
+    AND sst_anomaly_without_detrend.lat = grid_025gr.lat;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
+CREATE TRIGGER update_anomaly_gid_trigger
+AFTER INSERT OR UPDATE ON sst_anomaly_without_detrend
+FOR EACH ROW
+EXECUTE FUNCTION update_anomaly_gid();
+
+/* ---------------------------------------------------------------------------------------------------------------------------------- */
 CREATE DATABASE marineheatwave
 ENCODING = 'UTF8'
 TEMPLATE = template0
