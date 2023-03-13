@@ -46,7 +46,14 @@ AFTER INSERT OR UPDATE ON sst_anomaly_without_detrend
 FOR EACH ROW
 EXECUTE FUNCTION update_anomaly_gid();
 
+ALTER TABLE  add COLUMN gid INTEGER;
+
+UPDATE sst_anomaly_without_detrend SET gid = grid_025gr.gid
+FROM grid_025gr
+WHERE grid_025gr.lon = sst_anomaly_without_detrend.lon AND grid_025gr.lat = sst_anomaly_without_detrend.lat;
+
 /* ---------------------------------------------------------------------------------------------------------------------------------- */
+
 CREATE DATABASE marineheatwave
 ENCODING = 'UTF8'
 TEMPLATE = template0
