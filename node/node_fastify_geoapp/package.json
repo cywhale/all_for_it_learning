@@ -15,11 +15,11 @@
   "dependencies": {
     "boom": "^7.3.0",
     "fastify": "^2.15.1",
-    "fastify-plugin": "^1.6.1",
+    "fastify-plugin": "^4.5.0",
     "fastify-static": "^4.4.1",
     "mongoose": "^5.13.15",
     "path": "^0.12.7",
-    "point-of-view": "^3.8.0",
+    "point-of-view": "^6.3.0",
     "pug": "^3.0.1"
   }
 }
