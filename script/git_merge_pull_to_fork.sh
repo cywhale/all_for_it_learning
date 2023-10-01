@@ -26,3 +26,9 @@ cp -R lib ~/YourApp/client/node_modules/react-xarrows/
 
 ## modify import react-xarrows
 ## import Xarrow, { Xwrapper } from 'react-xarrows/lib/index.js'
+
+## commit:#67f4a94 
+npm add -D react@latest
+npm run build:prod
+## git add, commit, push
+yarn add https://github.com/cywhale/react-xarrows.git#67f4a94 
