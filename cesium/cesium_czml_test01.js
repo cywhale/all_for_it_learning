@@ -3,7 +3,8 @@
 //geojson to czml, may ref: https://cesium.com/blog/2018/03/21/czml-time-animation/
 //simple.czml example on sandcastle: https://sandcastle.cesium.com/SampleData/simple.czml
 //satellite example: https://bit.ly/3pbA45g with airplane and side-view https://reurl.cc/8n8NdM
-
+//a new version: https://shorturl.at/rELX1
+//ship image: https://www.iconfinder.com/icons/7811678/ship_logistic_vessel_freight_export_icon
 
 var viewer = new Cesium.Viewer("cesiumContainer", {
     shouldAnimate: true,
