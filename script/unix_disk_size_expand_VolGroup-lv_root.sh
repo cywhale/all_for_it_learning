@@ -1,3 +1,28 @@
+# Useful disk/tools related commands
+# umount disk but say it's busy (related to the mountpoint/subdirectory), kill related process which make it busy
+sudo fuser -km /path/to/mountpoint
+# or
+sudo lsof | grep '/path/to/mountpoint'
+
+# mount new partition when power-on/reboot (/dev/sdc1 for example
+sudo mount /dev/sdc1 /path/to/new/mountpoint
+sudo blkid #Get UUID of /dev/sdc1, for example
+sudo nano /etc/fstab
+```
+UUID=your-partition-uuid /path/to/new/mountpoint ext4 defaults 0 2
+```
+# transfer data
+sudo rsync -avx /path/to/old/filesystem/ /path/to/new/mountpoint/
+
+# see Inodes usage
+df -i
+sudo tune2fs -l /dev/sdc1 | grep -i inode
+
+# re-tune Inodes will recreate total filesystem (thus format all you data). Don't use if not backup
+# sudo mkfs.ext4 -N 402653184 /dev/sdc1  ## for a 6TB disk
+
+###### The following is old, maybe outdated for new ubuntu OS. Try using Gparted if prefer GUI ######
+# --------------------------
 # Solve fdisk /dev/sda error: "All space for primary partitions is in use. Adding logical partition 6 No free sectors available."
 # ref: https://www.rootusers.com/how-to-increase-the-size-of-a-linux-lvm-by-expanding-the-virtual-machine-disk/
 fdisk -l ## to check current partition and make cure new partition number, see ref URL (may need sudo) 
