@@ -26,3 +26,6 @@ my_project/
 pipenv install -r ./requirements.txt 
 pipenv update
 pipreqs --force ./ #then I can keep a minmum man-written requirements.txt, not lots of dependency
+pipenv install #if you already have Pipfile and want to use it to install
+# But somtimes Lockfile stuck, and need
+PIP_NO_CACHE_DIR=off pipenv install
