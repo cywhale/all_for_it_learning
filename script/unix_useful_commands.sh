@@ -1,5 +1,7 @@
 # find files containing specific text
 find ./ -type f -exec grep -l "Text_to_find" {} \;
+# -E regex, -o output grep content, -H output filename at the same time, -h Suppresses the prefixing of filenames on output
+find ./ -type f -exec grep -EoH "[a-z]-[0-9]+p(x|\s|\'|\")*" {} \; #search xx-15p xx-15px xx-15p' for example for some css class rule
 
 # find files older than 100days and move
 find . -name "test*" -mtime +100 -exec mv {} /tmp/ \;
