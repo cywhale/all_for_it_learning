@@ -29,3 +29,10 @@ pipreqs --force ./ #then I can keep a minmum man-written requirements.txt, not l
 pipenv install #if you already have Pipfile and want to use it to install
 # But somtimes Lockfile stuck, and need
 PIP_NO_CACHE_DIR=off pipenv install
+
+# test environment for testing package install
+pyenv virtualenv 3.11.3 test-env-3.11
+# list
+pyenv virtualenvs
+pyenv activate test-env-3.11
+pyenv deactivate
