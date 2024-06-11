@@ -16,7 +16,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "braces": "^2.3.2",
+    "braces": "^3.0.3",
     "eslint": "^6.8.0"
   },
   "dependencies": {
