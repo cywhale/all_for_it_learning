@@ -25,6 +25,19 @@ sudo dpkg --purge linux-modules-extra-5.4.0-91-generic linux-image-5.4.0-91-gene
 sudo apt --fix-broken install
 sudo apt autoremove
 
+#Ban IP from posfix
+#Find in /var/log/syslog
+#postfix/smtpd[27172]: connect from unknown[xx.xxx.xxx.xx]
+#postfix/smtpd[27172]: disconnect from unknown[xx.xxx.xxx.xx] ehlo=1 auth=0/1 quit=1 commands=2/3
+sudo nano /etc/postfix/main.cf:
+## add this line
+# smtpd_client_restrictions = permit_mynetworks, reject_rbl_client zen.spamhaus.org, reject_unknown_client_hostname, reject_rbl_client b.barracudacentral.org, check_client_access cidr:/etc/postfix/client_access
+sudo nano /etc/postfix/client_access
+# xx.xxx.xxx.xx REJECT
+# Convert this file into a hash table for postfix:
+sudo postmap /etc/postfix/client_access
+sudo systemctl restart postfix
+
 # list which port being listened
 sudo netstat -tulpn | grep LISTEN
 
