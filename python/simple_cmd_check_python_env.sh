@@ -22,7 +22,7 @@ my_project/
 ├── setup.py
 ├── pytest.ini
 "
-#Use pipenv to solve ./requirements.txt cannot be upgraded to latest version automatically problem
+# Use pipenv to solve ./requirements.txt cannot be upgraded to latest version automatically problem
 pipenv install -r ./requirements.txt 
 pipenv update
 pipreqs --force ./ #then I can keep a minmum man-written requirements.txt, not lots of dependency
@@ -36,3 +36,25 @@ pyenv virtualenv 3.11.3 test-env-3.11
 pyenv virtualenvs
 pyenv activate test-env-3.11
 pyenv deactivate
+
+# Trouble solution
+# Numpy version conflict:  Installing collected packages: numpy
+#  Attempting uninstall: numpy
+#    Found existing installation: numpy None
+# error: uninstall-no-record-fileCannot uninstall packaging None
+# ╰─> The package's contents are unknown: no RECORD file was found for packaging.
+# Solution: follow this: 
+# https://stackoverflow.com/questions/68886239/cannot-uninstall-numpy-1-21-2-record-file-not-found
+# Find your site-packages folder.
+
+SITE_PACKAGES_FOLDER=$(python3 -c "import sysconfig; print(sysconfig.get_paths()['purelib'])")
+echo $SITE_PACKAGES_FOLDER
+# Check for extraneous numpy packages from your site-packages folder.
+
+ls $SITE_PACKAGES_FOLDER/numpy*
+# Trash extraneous packages.
+
+pip install trash-cli
+trash-put $SITE_PACKAGES_FOLDER/numpy*
+# Reinstall numpy.
+pip install --upgrade numpy
