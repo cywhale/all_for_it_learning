@@ -274,3 +274,51 @@ for (i in 1:2){
   y5[,i] = arima.sim(n,model=list(ar=phi, ma=0.5))
   ts.plot(y5[,i]); title(paste("simulation ARMA(1,1) series",i))
 }
+
+#data generation
+n = 100
+
+y6 = rnorm(n, sin((1:n)/10), 0.5)
+ts.plot(y6)
+# y = arima.sim(n, model=list(ar=0.8))
+# EDA
+acf(y6)
+
+fit1 = arima(y6, order=c(1,0,0)) #fit AR(1)
+fit1$coef
+#View(fit1)
+ts.plot(y6)
+lines(1:n, y6-fit1$resid, col="blue", lwd=2)
+
+#1-step and 2-step forecast 
+ypred1 = predict(fit1, n.ahead=2) #predict function for arima fitting object
+ypred1
+
+acf(diff(y6)) 
+
+fit2 = arima(y6, order=c(0,1,1)) #fit IMA(1)
+fit2$coef
+
+ts.plot(y6)
+lines(1:n, y6-fit2$resid, col=2, lwd=2)
+legend("bottomright", legend=c("Data", "IMA(1) Forecast"), col=c(1,2), lty=1, lwd=2, bty="n")
+
+# install.packages("qcc") #providing tools for ewma 
+library(qcc)
+
+idx = 1:n #set time index
+pred1 = ewmaSmooth(idx,y6,lambda=1+fit2$coef) #apply EWMA forecast based on the lambda value obtained from the IMA fitting
+
+ts.plot(y6)
+lines(2:(n+1),pred1$y, col=4, lwd=2) 
+legend("bottomright", legend=c("Data", "EWMA Forecast"), col=c(1,4), lty=1, lwd=2, bty="n")
+
+pred2 = ewmaSmooth(idx,y6,lambda=0.1) #user specified lambda (try different lambda's)
+
+ts.plot(y6)
+lines(1:n, y6-fit2$resid, col=2, lwd=2)
+lines(2:(n+1),pred1$y, col=4, lwd=2) 
+lines(2:(n+1),pred2$y, col=5, lwd=2) 
+legend("bottomright", legend=c("Data", "IMA BLP", "EWMA(estimated lambda)", "EWAM(lambda=0.1)"), col=c(1,2,4,5), lty=1, lwd=2, bty="n")
+
+
