@@ -321,4 +321,283 @@ lines(2:(n+1),pred1$y, col=4, lwd=2)
 lines(2:(n+1),pred2$y, col=5, lwd=2) 
 legend("bottomright", legend=c("Data", "IMA BLP", "EWMA(estimated lambda)", "EWAM(lambda=0.1)"), col=c(1,2,4,5), lty=1, lwd=2, bty="n")
 
+library('astsa')
+par(mfrow = c(2,1), mar=c(1.5,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
+x = arima.sim(list(order=c(1,0,0), ar=.9), n=100) #try other parameter value
+plot(x, ylab="x", xlab="", main=(expression(AR(1)~~~phi==+.9)), type='n')
+lines(x)
 
+x = arima.sim(list(order=c(1,0,0), ar=-.9), n=100)
+plot(x, ylab="x",  xlab="",  main=(expression(AR(1)~~~phi==-.9)), type='n')
+lines(x)
+mtext('Time', side=1, line=1)
+
+#MA(1)
+par(mfrow = c(2,1), mar=c(1.5,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
+set.seed(101010)
+x = arima.sim(list(order=c(0,0,1), ma=.9), n=100)
+plot(x, ylab="x", xlab="", main=(expression(MA(1)~~~theta==+.9)), type='n')
+lines(x)
+
+x=arima.sim(list(order=c(0,0,1), ma=-.9), n=100)
+plot(x, ylab="x", xlab='', main=(expression(MA(1)~~~theta==-.9)), type='n')
+lines(x)
+mtext('Time', side=1, line=1)
+
+#AR(2)
+par(mfrow = c(3,1), mar=c(1.5,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
+x = arima.sim(list(order=c(2,0,0), ar=c(1.5,-.75)), n = 144)
+plot(x, axes=FALSE, xlab="Time", type='n') 
+axis(2);  axis(1, at=seq(0,144,by=12));  box()
+abline(v=seq(0,144,by=12), lty=2)
+abline(h=c(-5,0,5), lty=1, col=gray(.9))
+lines(x)
+
+acf(x)
+acf(x, type="partial")
+
+#Real Data: recruitment data series (monthly data)
+par(mfrow = c(3,1), mar=c(1.5,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
+ts.plot(rec)
+acf(rec)
+acf(rec, type="partial")
+
+#Estimation for recruitment data series using regression
+regr = ar.ols(rec, order=2, demean=FALSE, intercept=TRUE)
+regr
+
+fore = predict(regr, n.ahead=24) 
+fore
+
+#Prediction with prediction interval (±1 s.e.)
+par(mar=c(2.5,2.5,0,0)+.5, mgp=c(1.6,.6,0))
+ts.plot(rec, fore$pred, col=1:2, xlim=c(1980,1990), ylab="Recruitment", type='n')
+par(new=TRUE)
+ts.plot(rec, fore$pred, col=1:2, xlim=c(1980,1990), ylab="Recruitment")
+U = fore$pred+fore$se
+L = fore$pred-fore$se   
+xx = c(time(U), rev(time(U)))
+yy = c(L, rev(U))
+polygon(xx, yy, border = 8, col = gray(0.6, alpha = 0.2))
+lines(fore$pred, type="p", col=2)
+
+#Estimation for real data series
+# YW estimation: ‘ar.yw’
+# MLE: ‘arima’
+fit = ar.yw(rec, order=2, demean=TRUE)
+fit
+names(fit)
+fit$asy.var.coef # variance matrix (V) of YW estimator
+#Residual checking
+par(mfrow = c(3,1), mar=c(1.5,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.05)
+ts.plot(fit$resid)
+acf(fit$resid, na.action = na.pass) #the first 2 residuals are NA
+acf(fit$resid, type="partial", na.action = na.pass)
+
+#White noise test
+Box.test(fit$resid) # lag=1
+Box.test(fit$resid, lag=6, fitdf=2) #adjust df due to AR(2) fit
+Box.test(fit$resid, lag=6, type="Ljung-Box", fitdf=2) #default type = "Box-Pierce"  
+Box.test(fit$resid, lag=12, type="Ljung-Box", fitdf=2) 
+#McLeod and Li test:
+Box.test(fit$resid^2-mean(fit$resid^2,na.rm=T), lag=12, fitdf=2)
+#Diagnostic (residual) plots for time series fits
+fit = arima(rec, order=c(2,0,0), include.mean=TRUE)
+fit
+par(mfrow = c(3,1), mar=c(1.5,2,1,0)+.5, mgp=c(1.6,.6,0), cex.main=1.0)
+tsdiag(fit, gof.lag=24)
+#More data series to try: lynx dataset
+x = lynx 
+ts.plot(x)
+acf(x)
+acf(x, type="partial")
+
+fit1 = arima(x, order=c(2,0,0)) #Try AR(2) fitting
+fit1
+
+xi = polyroot(c(1, -fit1$coef[1:2])) #check roots for AR polynomial
+Mod(xi)
+## [1] 1.291269 1.291269
+2*pi/Arg(xi) 
+## [1]  8.531142 -8.531142
+pred1 = predict(fit1, n.ahead=10)
+names(pred1)
+## [1] "pred" "se"
+ts.plot(cbind(x,x-fit1$residuals), col=1:2, lwd=2) #compare observation and 1-step-ahead prediction
+#model diagnostics:
+acf(fit1$residuals)
+tsdiag(fit1, gof.lag=24) 
+
+fit2 = ar.yw(x)
+fit2 = arima(x, order=c(8,0,0)) #Try AR(8) fitting
+fit2
+
+xi = polyroot(c(1, -fit2$coef[1:2])) #check roots for AR polynomial
+
+Mod(xi)
+## [1] 1.260088 1.260088
+2*pi/Arg(xi) 
+## [1]  7.450365 -7.450365
+pred2 = predict(fit2, n.ahead=10)
+
+ts.plot(cbind(x,x-fit1$residuals,x-fit2$residuals), col=c(1,2,4), lwd=2) #compare observation and 1-step-ahead predictions from AR(2) fitting and AR(8) fitting
+legend("topright", legend=c("observation", "AR(2) fit", "AR(8) fit"), col=c(1,2,4), lwd=2, lty=1, bty="n")
+tsdiag(fit2, gof.lag=24) 
+
+#Try ARMA
+fit3 = arima(x, order=c(2,0,1)) 
+fit3
+## 
+## Call:
+## arima(x = x, order = c(2, 0, 1))
+## 
+## Coefficients:
+##          ar1      ar2      ma1  intercept
+##       1.3129  -0.7128  -0.2759  1546.5600
+## s.e.  0.1607   0.1121   0.2660   149.1229
+## 
+## sigma^2 estimated as 764086:  log likelihood = -934.73,  aic = 1879.46
+xi = polyroot(c(1, -fit3$coef[1:2])) #check roots for AR polynomial
+
+Mod(xi)
+## [1] 1.18448 1.18448
+2*pi/Arg(xi) 
+## [1]  9.239002 -9.239002
+pred3 = predict(fit3, n.ahead=10)
+
+ts.plot(cbind(x,x-fit1$residuals,x-fit3$residuals), col=c(1,2,5), lwd=2) #compare observation and 1-step-ahead predictions from AR(2) fitting and AR(8) fitting
+legend("topright", legend=c("observation", "AR(2) fit", "ARMA(2,1) fit"), col=c(1,2,5), lwd=2, lty=1, bty="n")
+
+# Demo for ACF structures of SARIMA models
+# Parameter setting:
+phi1 = 0.8 
+phi12 = 0.5
+theta1 = 0.6
+theta12 = 0.3 
+# AR(1) or SARIMA(1,0,0)*(0,0,0)_{12}
+par(mfcol=c(2,2))
+ar = phi1  #(1-phi1 B)
+b = ARMAacf(ar=ar, lag.max=24)
+plot(0:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+title("SARIMA(1,0,0)x(0,0,0)")
+b = ARMAacf(ar=ar, lag.max=24, pacf=TRUE)
+plot(1:24,b,type="h", xlab="Lag", ylab="PACF",lwd=2)
+x = arima.sim(n=100, model=list(ar=ar))
+ts.plot(x)
+acf(x,24)
+
+#SARIMA(0,0,0)*(1,0,0)_{12}
+par(mfrow=c(2,2))
+ar = c(rep(0,11),phi12) #(1-phi12 B^{12})
+b = ARMAacf(ar=ar, lag.max=24)
+plot(0:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+title("SARIMA(0,0,0)x(1,0,0)")
+b = ARMAacf(ar=ar, lag.max=24, pacf=TRUE)
+plot(1:24,b,type="h", xlab="Lag", ylab="PACF",lwd=2)
+x = arima.sim(n=100, model=list(ar=ar))
+ts.plot(x)
+acf(x,24)
+
+#SARIMA(1,0,0)*(1,0,0)_{12}
+par(mfrow=c(2,2))
+ar = c(phi1,rep(0,10),phi12,-phi1*phi12) #(1-phi1 B)(1-phi12 B^{12})
+b = ARMAacf(ar=ar, lag.max=24)
+plot(0:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+title("SARIMA(1,0,0)x(1,0,0)")
+b = ARMAacf(ar=ar, lag.max=24, pacf=TRUE)
+plot(1:24,b,type="h", xlab="Lag", ylab="PACF",lwd=2)
+x = arima.sim(n=100, model=list(ar=ar))
+ts.plot(x)
+acf(x,24)
+
+#MA(1) or SARIMA(0,0,1)x(0,0,0)_{12}
+par(mfrow=c(2,2))
+ma = theta1 
+b = ARMAacf(ma=ma, lag.max=24)
+plot(0:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+title("SARIMA(0,0,1)x(0,0,0)")
+b = ARMAacf(ma=ma, lag.max=24, pacf=TRUE)
+plot(1:24,b,type="h", xlab="Lag", ylab="PACF",lwd=2)
+x = arima.sim(n=100, model=list(ar=ar))
+x = arima.sim(n=100, model=list(ma=ma))
+ts.plot(x)
+acf(x,24)
+
+#SARIMA(0,0,0)*(0,0,1)_{12}
+par(mfrow=c(2,2))
+ma = c(rep(0,11),theta12)
+b = ARMAacf(ma=ma, lag.max=24)
+plot(0:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+title("SARIMA(0,0,0)x(0,0,1)")
+b = ARMAacf(ma=ma, lag.max=24, pacf=TRUE)
+plot(1:24,b,type="h", xlab="Lag", ylab="PACF",lwd=2)
+x = arima.sim(n=100, model=list(ar=ar))
+x = arima.sim(n=100, model=list(ma=ma))
+ts.plot(x)
+acf(x,24)
+
+#SARIMA(0,0,1)*(0,0,1)_{12}
+par(mfrow=c(2,2))
+ma = c(theta1,rep(0,10),theta12,theta1*theta12)
+b = ARMAacf(ma=ma, lag.max=24)
+plot(0:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+title("SARIMA(0,0,1)x(0,0,1)")
+b = ARMAacf(ma=ma, lag.max=24, pacf=TRUE)
+plot(1:24,b,type="h", xlab="Lag", ylab="PACF",lwd=2)
+x = arima.sim(n=100, model=list(ar=ar))
+x = arima.sim(n=100, model=list(ma=ma))
+ts.plot(x)
+acf(x,24)
+
+#ARMA(1,1) or SARIMA(1,0,1)*(0,0,0)_{12}
+par(mfrow=c(2,2))
+ar = phi1
+ma = theta1
+b = ARMAacf(ar=ar, ma=ma, lag.max=24)
+plot(0:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+title("SARIMA(1,0,1)x(0,0,0)")
+b = ARMAacf(ar=ar, ma=ma, lag.max=24, pacf=TRUE)
+plot(1:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+x = arima.sim(n=100, model=list(ar=ar,ma=ma))
+ts.plot(x)
+acf(x,24)
+
+#SARIMA(1,0,0)*(0,0,1)_{12}
+par(mfrow=c(2,2))
+ar = phi1
+ma = c(rep(0,11),theta12)
+b = ARMAacf(ar=ar, ma=ma, lag.max=24)
+plot(0:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+title("SARIMA(1,0,0)x(0,0,1)")
+b = ARMAacf(ar=ar, ma=ma, lag.max=24, pacf=TRUE)
+plot(1:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+x = arima.sim(n=100, model=list(ar=ar,ma=ma))
+ts.plot(x)
+acf(x,24)
+
+#SARIMA(1,0,1)*(0,0,1)_{12}
+par(mfrow=c(2,2))
+ar = phi1
+ma = c(theta1,rep(0,10),theta12,theta1*theta12)
+b = ARMAacf(ar=ar, ma=ma, lag.max=24)
+plot(0:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+title("SARIMA(1,0,1)x(0,0,1)")
+b = ARMAacf(ar=ar, ma=ma, lag.max=24, pacf=TRUE)
+plot(1:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+x = arima.sim(n=100, model=list(ar=ar,ma=ma))
+ts.plot(x)
+acf(x,24)
+
+#SARIMA(1,0,1)*(1,0,1)_{12}
+par(mfrow=c(2,2))
+ar = c(phi1,rep(0,10),phi12,-phi1*phi12) 
+ma = c(theta1,rep(0,10),theta12,theta1*theta12)
+
+b = ARMAacf(ar=ar, ma=ma, lag.max=24)
+plot(0:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+title("SARIMA(1,0,1)x(1,0,1)")
+b = ARMAacf(ar=ar, ma=ma, lag.max=24, pacf=TRUE)
+plot(1:24,b,type="h", xlab="Lag", ylab="ACF",lwd=2)
+x = arima.sim(n=100, model=list(ar=ar,ma=ma))
+ts.plot(x)
+acf(x,24)
