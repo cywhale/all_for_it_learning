@@ -16,10 +16,10 @@
     "connect-mongo": "^3.2.0",
     "cookie-parser": "^1.4.7",
     "express": "^5.0.1",
-    "express-session": "^1.18.1",
+    "express-session": "^1.18.2",
     "http-errors": "^1.7.3",
     "mongoose": "^6.13.6",
-    "morgan": "^1.10.0",
+    "morgan": "^1.10.1",
     "path": "^0.12.7",
     "pug": "^3.0.3"
   }
