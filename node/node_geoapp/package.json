@@ -12,10 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.20.1",
+    "body-parser": "^1.20.4",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "^1.4.7",
-    "express": "^5.0.1",
+    "express": "^5.2.1",
     "express-session": "^1.18.2",
     "http-errors": "^1.7.3",
     "mongoose": "^6.13.6",
