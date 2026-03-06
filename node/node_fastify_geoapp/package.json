@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "boom": "^7.3.0",
-    "fastify": "^5.7.3",
+    "fastify": "^5.8.1",
     "fastify-plugin": "^4.5.0",
     "fastify-static": "^4.4.1",
     "mongoose": "^8.9.5",
